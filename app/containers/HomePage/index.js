@@ -13,13 +13,28 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 
+import Paper from 'material-ui/Paper';
+import RaisedButton from 'material-ui/RaisedButton';
+
 export default class HomePage extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
   render() {
     return (
-      <h1>
-        <FormattedMessage {...messages.header} />
-      </h1>
+        <div style={{padding: '20px'}}>
+          <h1>
+            <FormattedMessage {...messages.header} />
+          </h1>
+          <Paper style={{width: '100%'}} zDepth={1}>
+            <div style={{padding: '20px'}}>
+              <h3>Test</h3>
+              <RaisedButton
+                  label="Click Me"
+                  fullWidth={true}
+                  primary={true}
+                  onClick={e => alert('Hey! You clicked!')} />
+            </div>
+          </Paper>
+        </div>
     );
   }
 }
