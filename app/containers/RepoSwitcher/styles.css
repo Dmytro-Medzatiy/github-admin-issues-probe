@@ -1,0 +1,12 @@
+.avatar {
+    margin: 0 2em;
+}
+
+li ul .list {
+    type: none;
+    background-color: yellow;
+}
+
+span {
+    type: none;
+}
