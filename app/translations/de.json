@@ -148,5 +148,10 @@
     "id": "boilerplate.containers.NotFoundPage.home",
     "defaultMessage": "Home",
     "message": ""
-  }
+  },
+  {
+    "id": "app.components.HomePage.title",
+    "defaultMessage": "GitHub Admin Issues Tool",
+    "message" : ""
+}
 ]

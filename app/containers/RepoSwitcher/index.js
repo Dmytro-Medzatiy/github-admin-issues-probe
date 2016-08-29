@@ -1,0 +1,122 @@
+/**
+ * Created by D.Medzatiy on 29.08.2016.
+ */
+
+import React, { Component } from 'react';
+
+import styles from './styles.css';
+
+import Paper from 'material-ui/Paper';
+import TextField from 'material-ui/TextField';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
+import Avatar from 'material-ui/Avatar';
+import defaultAvatar from 'assets/images/default_avatar.jpg';
+import RaisedButton from 'material-ui/RaisedButton';
+
+import { getDataUnauthorized } from 'api/restUtilities';
+
+class RepoSwitcher extends Component {
+    constructor(props){
+        super(props);
+        this.onFetch = this.onFetch.bind(this);
+        this.onFetchRepos = this.onFetchRepos.bind(this);
+
+        this.state = {
+            notFound: true,
+            js: "",
+            avatarURL: defaultAvatar,
+            repos: []
+        };
+    }
+
+    onFetch(){
+        const userName = this.inputText.input.value;
+        const fetchOptions = {
+            "method": "GET"
+        };
+        const URL = 'https://api.github.com/users/'+userName;
+        getDataUnauthorized(URL).then(
+            response=> {
+                if (response.response == 404) {
+                    this.setState({
+                        notFound: true,
+                        avatarURL: defaultAvatar
+                    });
+                } else {
+                    this.setState({
+                        notFound: false,
+                        js: response,
+                        avatarURL: response.avatar_url
+                    });
+                }
+            }
+        );
+    }
+
+    onFetchRepos(){
+        const userName = this.inputText.input.value;
+        const fetchOptions = {
+            "method": "GET"
+        };
+        const URL = 'https://api.github.com/users/'+userName+'/repos';
+        getDataUnauthorized(URL).then(
+            response=> {
+                if (response.response == 404) {
+                    this.setState({
+                        notFound: true,
+                        avatarURL: defaultAvatar
+                    });
+                } else {
+                    const repos = response.map((repo) => {
+                        return repo.name
+                    });
+                    this.setState({
+                        repos: repos
+                    });
+                }
+            }
+        );
+    }
+
+    render(){
+        const menuItems = this.state.repos.map((name,index)=>{
+            return (
+                <MenuItem value={index} primaryText={name} key={index} style={{type: "none"}} />
+            );
+        });
+        return(
+            <Paper style={{width: '100%'}} zDepth={1}>
+                <div style={{padding: '0 10px 10px 0', textAlign:"center"}}>
+                    <label>Input Repo's Author:{' '}</label>
+                    <TextField
+                        hintText="GitHub User Name"
+                        defaultValue=""
+                        ref={me => this.inputText = me}
+                        floatingLabelText="GitHub User Name"
+                    />
+                    <Avatar
+                        className={styles.avatar}
+                        src={this.state.avatarURL} />
+                    <SelectField value={1} maxHeight={200} className={styles.list}>
+                        {menuItems}
+                    </SelectField>
+                    <RaisedButton
+                        onClick={this.onFetch}
+                        label="Fetch user info"
+                    />
+                    <RaisedButton
+                        onClick={this.onFetchRepos}
+                        label="Fetch user repos"
+                    />
+
+
+                </div>
+            </Paper>
+        );
+    }
+
+}
+
+export default RepoSwitcher;
+

@@ -10,4 +10,8 @@ export default defineMessages({
     id: 'app.components.HomePage.header',
     defaultMessage: 'This is HomePage components !',
   },
+  title: {
+      id: 'app.components.HomePage.title',
+      defaultMessage: 'GitHub Admin Issues Tool'
+  }
 });

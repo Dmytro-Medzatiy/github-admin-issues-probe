@@ -1,0 +1,15 @@
+.footer {
+  display: flex;
+  margin-top: 15px;
+  border-top: 1px solid #252525;
+}
+
+.content {
+  text-align: center;
+  width: 100%;
+  padding-top: 1em;
+}
+
+img {
+  margin-left: 10px;
+}
