@@ -14,6 +14,8 @@ import Avatar from 'material-ui/Avatar';
 import defaultAvatar from 'assets/images/default_avatar.jpg';
 import RaisedButton from 'material-ui/RaisedButton';
 
+import ModalWindow from 'components/ModalWindow';
+
 import { getDataUnauthorized } from 'api/restUtilities';
 
 class RepoSwitcher extends Component {
@@ -60,7 +62,7 @@ class RepoSwitcher extends Component {
             "method": "GET"
         };
         const URL = 'https://api.github.com/users/'+userName+'/repos';
-        getDataUnauthorized(URL).then(
+        getDataUnauthorized(URL,fetchOptions).then(
             response=> {
                 if (response.response == 404) {
                     this.setState({
@@ -87,30 +89,46 @@ class RepoSwitcher extends Component {
         });
         return(
             <Paper style={{width: '100%'}} zDepth={1}>
-                <div style={{padding: '0 10px 10px 0', textAlign:"center"}}>
-                    <label>Input Repo's Author:{' '}</label>
+                <ModalWindow isOpen={true} />
+                <div style={{padding: '0 10px 10px 0', textAlign:"center"}} className="container-fluid">
+<div className="row center">
+                        <div className="col-lg-5 col-md-5 col-sm-5">
+                            <div className="box">
+
                     <TextField
                         hintText="GitHub User Name"
                         defaultValue=""
                         ref={me => this.inputText = me}
                         floatingLabelText="GitHub User Name"
                     />
+                            <RaisedButton
+                            onClick={this.onFetch}
+                            label="Gets"
+                        />
+                                </div>
+                            </div>
+                        <div className="col-lg-2 col-md-2">
+                            <div className="box">
                     <Avatar
                         className={styles.avatar}
                         src={this.state.avatarURL} />
+                            </div>
+                            </div>
+
+                        <div className="col-lg-5 col-md-5">
+                            <div className="box">
                     <SelectField value={1} maxHeight={200} className={styles.list}>
                         {menuItems}
                     </SelectField>
-                    <RaisedButton
-                        onClick={this.onFetch}
-                        label="Fetch user info"
-                    />
+
                     <RaisedButton
                         onClick={this.onFetchRepos}
-                        label="Fetch user repos"
+                        label="Show"
                     />
-
-
+                                </div>
+</div>
+    </div>
+                    
                 </div>
             </Paper>
         );

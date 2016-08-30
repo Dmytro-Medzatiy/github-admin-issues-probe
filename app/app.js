@@ -34,6 +34,8 @@ import { translationMessages } from './i18n';
 //Removed due to problems with material-ui SelectField and DropDownMenu
 //import 'sanitize.css/sanitize.css';
 
+import 'assets/css/flexboxgrid.css';
+
 // Create redux store with history
 // this uses the singleton browserHistory provided by react-router
 // Optionally, this could be changed to leverage a created history

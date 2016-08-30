@@ -42,7 +42,7 @@ class HomePage extends Component { // eslint-disable-line react/prefer-stateless
                 />
                 <RepoSwitcher />
 
-                <Footer />
+                
             </div>
         );
     }
