@@ -8,6 +8,7 @@ import { fromJS } from 'immutable';
 import { LOCATION_CHANGE } from 'react-router-redux';
 import languageProviderReducer from 'containers/LanguageProvider/reducer';
 import signInReducer from 'containers/HomePage/reducer';
+import githubAuthorReducer from 'containers/GitHubAuthor/reducer';
 
 /*
  * routeReducer
@@ -45,6 +46,7 @@ export default function createReducer(asyncReducers) {
     route: routeReducer,
     language: languageProviderReducer,
     user: signInReducer,
+    githubAuthor: githubAuthorReducer,
     ...asyncReducers,
   });
 }

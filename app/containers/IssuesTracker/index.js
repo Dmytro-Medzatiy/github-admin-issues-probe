@@ -3,14 +3,18 @@
  */
 
 import React, { Component } from 'react';
+import RepoSwitcher from 'components/RepoSwitcher';
+
 import Paper from 'material-ui/Paper';
+
+import styles from './styles.css';
 
 class IssuesTracker extends Component {
     render(){
         return(
-            <Paper className="content">
+            <Paper className={styles.content}>
                 <div>
-                    {this.props.issuesList}
+                    <RepoSwitcher repos={['none']} />
                 </div>
             </Paper>
         )

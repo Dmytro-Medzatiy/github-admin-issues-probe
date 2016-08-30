@@ -1,12 +1,5 @@
 .avatar {
-    margin: 0 2em;
+   margin: 1em 2em 0 0;
 }
 
-li ul .list {
-    type: none;
-    background-color: yellow;
-}
 
-span {
-    type: none;
-}

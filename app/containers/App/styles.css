@@ -4,4 +4,8 @@
  * App container styles
  */
 
+body {
+    min-width:400px;
+}
+
 

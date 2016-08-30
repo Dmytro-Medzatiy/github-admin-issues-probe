@@ -5,8 +5,8 @@ function getDataUnauthorized(URL, options={}){
         .then(response => {
             console.log('Received response: ' + JSON.stringify(response, null, 4));
             console.log('Received response: ' + response.status);
-            console.log('Received response: ' + response.statusText);
-            console.log(response.headers.get('Content-Type'));
+            console.log('Received response status text: ' + response.statusText);
+
             if (response.status >= 200 && response.status<300) {
                 return response.text()
                     .then(responseText => {
@@ -33,13 +33,12 @@ function getDataUnauthorized(URL, options={}){
                     });
             }
             else {
-                if (response.status==404) {
+                if (response.status == 404 ){
                     return {
-                        response: 404
+                        notFound: true
                     }
-                }
-                else {
-                    throw Error(response.statusText);
+                } else {
+                    throw new Error(response.statusText);
                 }
             }
         });

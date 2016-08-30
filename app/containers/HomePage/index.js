@@ -14,8 +14,9 @@ import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 import styles from './styles.css';
 
-import RepoSwitcher from 'containers/RepoSwitcher';
+import GitHubAuthor from 'containers/GitHubAuthor';
 import Footer from 'components/Footer';
+import IssuesTracker from 'containers/IssuesTracker';
 
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -40,9 +41,9 @@ class HomePage extends Component { // eslint-disable-line react/prefer-stateless
                     iconElementLeft={<IconButton><ActionInfo /></IconButton>}
                     iconElementRight={<FlatButton label="Sign In" />}
                 />
-                <RepoSwitcher />
+                <GitHubAuthor />
 
-                
+                <IssuesTracker />
             </div>
         );
     }
