@@ -55,7 +55,7 @@ class IssuesTracker extends Component {
         const fetchOptions = {
             "method": "GET",
             "headers": {
-                "Authorization": "token 9ed5a884e01774bcb9b8fb73b614217a193207ec"
+                "Authorization": "token "
             }
         };
 
