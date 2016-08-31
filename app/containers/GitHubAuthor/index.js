@@ -4,8 +4,8 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { changeGitHubAuthor } from './actions';
-import { getGitHubAuthor } from './selectors';
+import { changeGitHubAuthor, changeCurrentRepoIndex } from './actions';
+import { getGitHubAuthor, getRepoList, getCurrentRepoIndex } from './selectors';
 import { createStructuredSelector } from 'reselect';
 
 import styles from './styles.css';
@@ -22,6 +22,7 @@ import FlatButton from 'material-ui/FlatButton';
 import ModalWindow from 'components/ModalWindow';
 
 import { getDataUnauthorized } from 'api/restUtilities';
+import RepoSwitcher from 'components/RepoSwitcher';
 
 class GitHubAuthor extends Component {
     constructor(props) {
@@ -29,6 +30,7 @@ class GitHubAuthor extends Component {
         this.onSubmitAuthor = this.onSubmitAuthor.bind(this);
         this.getRepoList = this.getRepoList.bind(this);
         this.onChangeTextField = this.onChangeTextField.bind(this);
+        this.onChangeCurrentRepo = this.onChangeCurrentRepo.bind(this);
         this.state = {
             notFound: false,
             avatarURL: defaultAvatar,
@@ -44,16 +46,23 @@ class GitHubAuthor extends Component {
         });
     }
 
+    onChangeCurrentRepo(index) {
+        this.props.onNewRepo(index);
+    }
+
     onSubmitAuthor(e) {
         e.preventDefault();
         e.stopPropagation();
         const userName = this.state.authorName.trim();
         console.log(userName);
         const fetchOptions = {
-            "method": "GET"
+            "method": "GET",
+            "headers": {
+                "Authorization": "token 9ed5a884e01774bcb9b8fb73b614217a193207ec"
+            }
         };
         const URL = 'https://api.github.com/users/' + userName;
-        getDataUnauthorized(URL).then(
+        getDataUnauthorized(URL,fetchOptions).then(
             response=> {
                 if (response.notFound) {
                     this.setState({
@@ -85,7 +94,10 @@ class GitHubAuthor extends Component {
     getRepoList(){
         const userName = this.inputText.input.value;
         const fetchOptions = {
-            "method": "GET"
+            "method": "GET",
+            "headers": {
+                "Authorization": "token 9ed5a884e01774bcb9b8fb73b614217a193207ec"
+            }
         };
         const URL = 'https://api.github.com/users/'+userName+'/repos';
         return getDataUnauthorized(URL,fetchOptions).then(
@@ -106,6 +118,7 @@ class GitHubAuthor extends Component {
     }
 
     render(){
+        console.log("inside",this.props.currentRepoIndex);
 
         return(
             <Paper style={{width: '100%', minWidth:'360px',padding: '0 10px 10px 0', textAlign:"center"}} zDepth={1}>
@@ -138,6 +151,13 @@ class GitHubAuthor extends Component {
                                 label="Get info"
                             />
                         </div>
+                        <div>
+                            <RepoSwitcher
+                                repos={this.props.repoList}
+                                onChangeCurrentRepo={this.onChangeCurrentRepo}
+                                currentRepo={this.props.currentRepoIndex}
+                            />
+                        </div>
                     </div>
                 </div>
             </Paper>
@@ -147,12 +167,16 @@ class GitHubAuthor extends Component {
 
 const mapStateToProps = createStructuredSelector({
     githubAuthor: getGitHubAuthor(),
+    repoList: getRepoList(),
+    currentRepoIndex: getCurrentRepoIndex()
+
 
 });
 
 function mapDispatchToProps(dispatch){
     return {
         onNewAuthor: (user, id, avatarURL, repos) => dispatch(changeGitHubAuthor(user, id, avatarURL, repos)),
+        onNewRepo: (index) => dispatch(changeCurrentRepoIndex(index)),
         dispatch
     }
 }

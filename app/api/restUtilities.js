@@ -3,9 +3,9 @@ function getDataUnauthorized(URL, options={}){
 
     return fetch(URL, options)
         .then(response => {
-            console.log('Received response: ' + JSON.stringify(response, null, 4));
-            console.log('Received response: ' + response.status);
-            console.log('Received response status text: ' + response.statusText);
+            //console.log('Received response: ' + JSON.stringify(response, null, 4));
+            //console.log('Received response: ' + response.status);
+            //console.log('Received response status text: ' + response.statusText);
 
             if (response.status >= 200 && response.status<300) {
                 return response.text()

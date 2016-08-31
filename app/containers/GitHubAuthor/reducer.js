@@ -8,7 +8,8 @@ const initialState = {
         id: "",
         avatarURL: "",
         repos: []
-    }
+    },
+    currentRepoIndex: null
 };
 
 function githubAuthorReducer(state=initialState,action) {
@@ -19,8 +20,14 @@ function githubAuthorReducer(state=initialState,action) {
                     name: action.name,
                     id: action.id,
                     avatarURL: action.avatarURL,
-                    repos: action.repos
-                }
+                    repos: action.repos,
+                },
+                currentRepoIndex: null
+            };
+        case "CHANGE_CURRENT_REPO_INDEX":
+            return {
+                ...state,
+                currentRepoIndex:action.repoIndex
             };
         default: {
             return state;

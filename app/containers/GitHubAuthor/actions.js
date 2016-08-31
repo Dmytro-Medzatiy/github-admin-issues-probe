@@ -12,3 +12,9 @@ export function changeGitHubAuthor(name, id, avatarURL, repos) {
     }
 }
 
+export function changeCurrentRepoIndex(repoIndex) {
+    return {
+        type: "CHANGE_CURRENT_REPO_INDEX",
+        repoIndex
+    }
+}

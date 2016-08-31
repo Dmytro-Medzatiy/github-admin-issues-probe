@@ -3,21 +3,23 @@
  */
 
 const initialState = {
-    issues: {
-        repoId: "",
-        issuesList: []
-    }
+    issues: [],
+    currentIssueIndex: null
+
 };
 
 function issuesReducer(state=initialState, action) {
     switch (action.type) {
         case "CHANGE_ISSUES_LIST":
             return {
-                issues: {
-                    repoId: action.repoId,
-                    issuesList: action.issuesList
-                }
+                issues: action.issuesList,
+                currentIssueIndex: null
             };
+        case "CHANGE_CURRENT_ISSUES":
+            return {
+                ...state,
+                currentIssueIndex: action.issueIndex
+            }
         default: return state;
     }
 }

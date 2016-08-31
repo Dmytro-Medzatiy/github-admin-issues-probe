@@ -8,6 +8,7 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import Badge from 'material-ui/Badge';
 import ActionGrade from 'material-ui/svg-icons/action/grade';
+import CommunicationChat from 'material-ui/svg-icons/communication/chat';
 
 class RepoSwitcher extends Component {
     constructor(props){
@@ -21,13 +22,20 @@ class RepoSwitcher extends Component {
 
     }
 
-    handleOnRepoChange (event, index, value) {
+    componentWillReceiveProps(nextProps){
+        if (nextProps.currentRepo==undefined||nextProps.currentRepo==null) {
+            this.setState({
+                repo:null
+            });
+        }
+    }
 
-        console.log(this.props.repos[index].stars);
+    handleOnRepoChange (event, index, value) {
         this.setState({
             repo: value,
             index: index
         });
+        this.props.onChangeCurrentRepo(index);
     }
 
     render(){
@@ -36,6 +44,8 @@ class RepoSwitcher extends Component {
                 <MenuItem value={index} primaryText={repo.repoName} key={index} />
             );
         });
+
+
 
         return (
             <div className="container-fluid">
@@ -52,11 +62,20 @@ class RepoSwitcher extends Component {
                         {repos}
                     </SelectField>
                     <Badge
-                        badgeContent={(this.state.repo===null) ? 0 : this.props.repos[this.state.index].stars}
+                        title="Repository Stars"
+                        badgeContent={(this.state.repo===null||this.props.repos.length==0) ? 0 : this.props.repos[this.state.index].stars}
                         secondary={true}
                         style={{marginTop:"0.5em"}}
                     >
-                        <ActionGrade />
+                        <ActionGrade hoverColor="#b4b338" />
+                    </Badge>
+                    <Badge
+                        title="Open Issues"
+                        badgeContent={(this.state.repo===null||this.props.repos.length==0) ? 0 : this.props.repos[this.state.index].openIssues}
+                        secondary={true}
+                        style={{marginTop:"0.5em"}}
+                    >
+                        <CommunicationChat hoverColor="#b46310" />
                     </Badge>
                 </div>
             </div>
