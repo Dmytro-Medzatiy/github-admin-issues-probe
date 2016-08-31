@@ -9,6 +9,7 @@ import { LOCATION_CHANGE } from 'react-router-redux';
 import languageProviderReducer from 'containers/LanguageProvider/reducer';
 import signInReducer from 'containers/HomePage/reducer';
 import githubAuthorReducer from 'containers/GitHubAuthor/reducer';
+import issuesReducer from 'containers/IssuesTracker/reducer';
 
 /*
  * routeReducer
@@ -42,11 +43,12 @@ function routeReducer(state = routeInitialState, action) {
  * Creates the main reducer with the asynchronously loaded ones
  */
 export default function createReducer(asyncReducers) {
-  return combineReducers({
-    route: routeReducer,
-    language: languageProviderReducer,
-    user: signInReducer,
-    githubAuthor: githubAuthorReducer,
-    ...asyncReducers,
-  });
+    return combineReducers({
+        route: routeReducer,
+        language: languageProviderReducer,
+        user: signInReducer,
+        githubAuthor: githubAuthorReducer,
+        issues: issuesReducer,
+        ...asyncReducers,
+    });
 }
