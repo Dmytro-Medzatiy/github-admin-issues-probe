@@ -60,7 +60,7 @@ class IssuesTracker extends Component {
         };
 
 
-        getDataUnauthorized(fetchURL+issueIndex.toString(),fetchOptions).then(
+        getDataUnauthorized(fetchURL+issueIndex.toString()).then(
             response=> {
                 if (response.notFound) {
                     this.setState({

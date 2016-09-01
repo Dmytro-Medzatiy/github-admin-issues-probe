@@ -16,6 +16,9 @@ import NotificationDoNotDisturb from 'material-ui/svg-icons/notification/do-not-
 class IssueList extends Component {
     constructor(props){
         super(props);
+        this.state = {
+            selected: null
+        };
         this.onIssueClick = this.onIssueClick.bind(this);
     }
 
@@ -23,7 +26,11 @@ class IssueList extends Component {
         e.preventDefault();
         e.stopPropagation();
         const issueIndex = Number(e.currentTarget.dataset.index);
+        this.setState({
+            selected: issueIndex
+        });
         this.props.onChangeCurrentIssue(issueIndex);
+
     }
 
     render() {
@@ -40,7 +47,7 @@ class IssueList extends Component {
                           title={issue.state=="open" ? "Open Issue" : "Closed Issue"}
                           key={index}
                           data-index={index}
-                          style={{backgroundColor:"yellow"}}
+                          style={this.state.selected == index ? {backgroundColor:"#adacac"}:{}}
                           onClick={this.onIssueClick}
                 />
             )

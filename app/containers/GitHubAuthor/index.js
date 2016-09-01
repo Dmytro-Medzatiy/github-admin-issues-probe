@@ -62,7 +62,7 @@ class GitHubAuthor extends Component {
             }
         };
         const URL = 'https://api.github.com/users/' + userName;
-        getDataUnauthorized(URL,fetchOptions).then(
+        getDataUnauthorized(URL).then(
             response=> {
                 if (response.notFound) {
                     this.setState({
@@ -100,7 +100,7 @@ class GitHubAuthor extends Component {
             }
         };
         const URL = 'https://api.github.com/users/'+userName+'/repos';
-        return getDataUnauthorized(URL,fetchOptions).then(
+        return getDataUnauthorized(URL).then(
             response=> {
                 return response.map((repo) => {
                     return {
