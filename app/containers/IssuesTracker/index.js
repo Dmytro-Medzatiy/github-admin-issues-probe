@@ -7,13 +7,16 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { changeIssuesList, changeCurrentIssue } from './actions';
 import { getRepoList, getCurrentRepoIndex } from 'containers/GitHubAuthor/selectors';
+import { getCurrentIssueIndex, getCurrentIssue } from './selectors';
 
 import RepoSwitcher from 'components/RepoSwitcher';
 
 import Paper from 'material-ui/Paper';
 import CircularProgress from 'material-ui/CircularProgress';
 import IssueList from 'components/IssueList';
+import IssueLabels from 'components/IssueLabels';
 import { getDataUnauthorized } from 'api/restUtilities';
+import IssueContent from 'containers/IssueContent';
 
 import styles from './styles.css';
 
@@ -35,6 +38,13 @@ class IssuesTracker extends Component {
                 issues: []
             });
             this.getIssues(1,nextProps.currentRepoIndex);
+        } else {
+            if (nextProps.currentRepoIndex==null) {
+                this.setState({
+                    issues: []
+                });
+                this.props.onChangeIssues([]);
+            }
         }
     }
 
@@ -45,9 +55,6 @@ class IssuesTracker extends Component {
     getIssues(issueIndex, repoIndex) {
         const {repoList} = this.props;
         const currentRepo = repoList[repoIndex];
-
-        console.log("current", currentRepo);
-
 
         const owner = currentRepo.owner;
         const repoName = currentRepo.repoName;
@@ -109,15 +116,15 @@ class IssuesTracker extends Component {
 
     render() {
 
-        console.log("propsIndex", this.props.currentRepoIndex);
-        console.log("propsIndex", this.props.repoList);
+
         const message = this.props.currentRepoIndex == null ?
-            "Chose Author and Repository first...":
+            "Choose Author and Repository first...":
             "There is no issues at this repo...";
 
         const list =  ((this.state.issues.length > 0 ) ?
             <IssueList issueList={this.state.issues}
                        onChangeCurrentIssue={this.onChangeCurrentIssue}
+                       style={{height:"200px",overflow:"scrolling"}}
             /> :
             <h4 style={{padding:"15px", color: "#4b606b"}}>{message}</h4>);
 
@@ -127,24 +134,35 @@ class IssuesTracker extends Component {
                 <h4>Loading issues...</h4>
                 <CircularProgress color="#ff9800"/>
             </div>) : null;
+        const issueContent = this.props.currentIssue != undefined ?
+            <IssueContent /> : <h4 style={{margin:"2em"}}>Choose Issue</h4>;
+
         return (
             <div className="container" style={{marginTop:"0.5em"}}>
                 <div className="row">
                     <div className="col-xs">
-                        <div className="box">
-                            <Paper>
+                        <div className="box" >
+                            <Paper >
                                 <div style={{textAlign: "left", backgroundColor: "#ff9800", color: "white"}}>
                                     <h4 style={{padding:"15px 0 15px 15px", margin:"0"}}>Issues</h4>
                                 </div>
-                                {list}
                                 {waiter}
+                                {list}
+
                             </Paper>
                         </div>
                     </div>
                     <div className="col-xs-8">
                         <div className="box">
-                            <Paper>
-                                <h1>Issue info</h1>
+                            <Paper style={this.props.currentIssueIndex!=null ? {display: "block"} : {display:"none"}}>
+                                <div style={{textAlign: "left", backgroundColor: "#ff9800", color: "white"}}>
+                                    <h4 style={{padding:"15px 0 15px 15px", margin:"0"}}>
+                                        Issue #{this.props.currentIssueIndex+1}
+                                    </h4>
+                                </div>
+
+                                {issueContent}
+
                             </Paper>
                         </div>
                     </div>
@@ -157,7 +175,9 @@ class IssuesTracker extends Component {
 
 const mapStateToProps = createStructuredSelector({
     repoList: getRepoList(),
-    currentRepoIndex: getCurrentRepoIndex()
+    currentRepoIndex: getCurrentRepoIndex(),
+    currentIssueIndex: getCurrentIssueIndex(),
+    currentIssue: getCurrentIssue(),
     
 });
 

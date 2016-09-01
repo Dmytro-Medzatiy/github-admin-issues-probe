@@ -1,0 +1,15 @@
+.inner {
+    max-width:inherit;
+    max-height: 100px;
+    overflow: auto;
+}
+
+img {
+    max-width: 100%;
+}
+
+pre {
+    max-width: inherit;
+    max-height: 800px;
+    overflow: auto;
+}

@@ -10,6 +10,7 @@ import languageProviderReducer from 'containers/LanguageProvider/reducer';
 import signInReducer from 'containers/HomePage/reducer';
 import githubAuthorReducer from 'containers/GitHubAuthor/reducer';
 import issuesReducer from 'containers/IssuesTracker/reducer';
+import commentsReducer from 'containers/IssueContent/reducer';
 
 /*
  * routeReducer
@@ -49,6 +50,7 @@ export default function createReducer(asyncReducers) {
         user: signInReducer,
         githubAuthor: githubAuthorReducer,
         issues: issuesReducer,
+        comments: commentsReducer,
         ...asyncReducers,
     });
 }

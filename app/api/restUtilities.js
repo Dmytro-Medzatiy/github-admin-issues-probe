@@ -1,5 +1,5 @@
 
-function getDataUnauthorized(URL, options={"headers": {}}){
+function getDataUnauthorized(URL, options={"headers": {"Authorization": "token "}}){
 
     return fetch(URL, options)
         .then(response => {
