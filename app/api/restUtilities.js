@@ -1,6 +1,6 @@
-//{"Authorization": "token 60173b1faff38c7263392af60531ee1431abe7b9"}
+//"headers":{"Authorization": "token "}
 
-function getDataUnauthorized(URL, options={"headers": {"Authorization": "Basic Dmytro-Medzatiy:Medzalb469"}}){
+function getDataUnauthorized(URL, options={}){
 
     return fetch(URL, options)
         .then(response => {
