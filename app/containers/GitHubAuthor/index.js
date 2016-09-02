@@ -24,6 +24,7 @@ import ModalWindow from 'components/ModalWindow';
 import { getDataUnauthorized } from 'api/restUtilities';
 import RepoSwitcher from 'components/RepoSwitcher';
 
+
 class GitHubAuthor extends Component {
     constructor(props) {
         super(props);

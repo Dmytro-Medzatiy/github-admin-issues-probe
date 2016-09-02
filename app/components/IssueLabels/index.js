@@ -45,7 +45,7 @@ class IssueLabels extends Component {
                     <IconButton tooltip="Edit labels..."
                                 touch={true}
                                 style={{ height: "40px", marginTop: "-5px",marginLeft:"1em"}}
-                                tooltipPosition="top-center">
+                                tooltipPosition="top-right">
                         <ActionNoteAdd hoverColor="#ff9800"/>
                     </IconButton>
                 </div>

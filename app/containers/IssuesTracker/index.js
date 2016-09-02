@@ -17,6 +17,7 @@ import IssueList from 'components/IssueList';
 import IssueLabels from 'components/IssueLabels';
 import { getDataUnauthorized } from 'api/restUtilities';
 import IssueContent from 'containers/IssueContent';
+import ModalLoading from 'components/ModalLoading';
 
 import styles from './styles.css';
 
@@ -86,6 +87,7 @@ class IssuesTracker extends Component {
                     const state = response.state;
                     const comments = response.comments;
                     const body = response.body;
+                    const issueNumber = response.number;
                     const closedBy = (response.closed_by!=null) ?
                     {
                         name: response.closed_by.login,
@@ -99,6 +101,7 @@ class IssuesTracker extends Component {
                         state,
                         comments,
                         body,
+                        issueNumber,
                         closedBy
                     };
 
@@ -115,9 +118,9 @@ class IssuesTracker extends Component {
     }
 
     render() {
+        const {currentRepoIndex, repoList} = this.props;
 
-
-        const message = this.props.currentRepoIndex == null ?
+        const message = currentRepoIndex == null ?
             "Choose Author and Repository first...":
             "There is no issues at this repo...";
 
@@ -133,9 +136,12 @@ class IssuesTracker extends Component {
             (<div style={{textAlign:"center"}}>
                 <h4>Loading issues...</h4>
                 <CircularProgress color="#ff9800"/>
+                <ModalLoading  isOpen={true}
+                              text="Loading Issues, wait a moment..."
+                />
             </div>) : null;
         const issueContent = this.props.currentIssue != undefined ?
-            <IssueContent /> : <h4 style={{margin:"2em"}}>Choose Issue</h4>;
+            <IssueContent currentRepo={repoList[currentRepoIndex]} /> : <h4 style={{margin:"2em"}}>Choose Issue</h4>;
 
         return (
             <div className="container" style={{marginTop:"0.5em"}}>
@@ -147,6 +153,7 @@ class IssuesTracker extends Component {
                                     <h4 style={{padding:"15px 0 15px 15px", margin:"0"}}>Issues</h4>
                                 </div>
                                 {waiter}
+
                                 {list}
 
                             </Paper>

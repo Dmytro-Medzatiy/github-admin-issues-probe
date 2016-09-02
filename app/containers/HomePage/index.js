@@ -42,7 +42,6 @@ class HomePage extends Component { // eslint-disable-line react/prefer-stateless
                     iconElementRight={<FlatButton label="Sign In" />}
                 />
                 <GitHubAuthor />
-
                 <IssuesTracker />
             </div>
         );
