@@ -14,9 +14,13 @@ import RaisedButton from 'material-ui/RaisedButton';
  * You can also close this dialog by clicking outside the dialog, or with the 'Esc' key.
  */
 export default class ModalDialog extends React.Component {
-    state = {
-        open: false,
-    };
+    constructor(props){
+        super(props);
+        this.state = {
+            open: true,
+        };
+    }
+
 
     handleOpen = () => {
         this.setState({open: true});
@@ -28,30 +32,26 @@ export default class ModalDialog extends React.Component {
 
     render() {
         const actions = [
-            <FlatButton
-                label="Cancel"
+            <RaisedButton
+                label={this.props.closeButtonText}
                 primary={true}
                 onTouchTap={this.handleClose}
-            />,
-            <FlatButton
-                label="Submit"
-                primary={true}
-                keyboardFocused={true}
-                onTouchTap={this.handleClose}
-            />,
+            />
         ];
+
+        const { title, content } = this.props
 
         return (
             <div>
-                <RaisedButton label="Dialog" onTouchTap={this.handleOpen} />
                 <Dialog
-                    title="Dialog With Actions"
+                    title= {title}
                     actions={actions}
                     modal={false}
                     open={this.state.open}
                     onRequestClose={this.handleClose}
+                    actionsContainerStyle={{textAlign:"center"}}
                 >
-                    The actions in this window were passed in as an array of React objects.
+                    {this.props.content}
                 </Dialog>
             </div>
         );

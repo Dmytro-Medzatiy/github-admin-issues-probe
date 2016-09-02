@@ -1,11 +1,12 @@
+//{"Authorization": "token 60173b1faff38c7263392af60531ee1431abe7b9"}
 
-function getDataUnauthorized(URL, options={"headers": {"Authorization": "token "}}){
+function getDataUnauthorized(URL, options={"headers": {"Authorization": "Basic Dmytro-Medzatiy:Medzalb469"}}){
 
     return fetch(URL, options)
         .then(response => {
-            //console.log('Received response: ' + JSON.stringify(response, null, 4));
-            //console.log('Received response: ' + response.status);
-            //console.log('Received response status text: ' + response.statusText);
+            console.log('Received response: ' + JSON.stringify(response, null, 4));
+            console.log('Received response: ' + response.status);
+            console.log('Received response status text: ' + response.statusText);
 
             if (response.status >= 200 && response.status<300) {
                 return response.text()
