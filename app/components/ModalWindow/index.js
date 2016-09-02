@@ -43,7 +43,7 @@ export default class ModalDialog extends React.Component {
 
         return (
             <div>
-                <RaisedButton label="Dialog" onTouchTap={this.handleOpen} />
+
                 <Dialog
                     title="Dialog With Actions"
                     actions={actions}

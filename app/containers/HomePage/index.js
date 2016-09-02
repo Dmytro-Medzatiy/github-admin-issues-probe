@@ -20,7 +20,7 @@ import IssuesTracker from 'containers/IssuesTracker';
 
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import * as actions from './actions';
+import { signIn, signOut} from './actions';
 import { getSignedUser } from './selectors';
 
 
@@ -30,10 +30,37 @@ import IconButton from 'material-ui/IconButton';
 import ActionInfo from 'material-ui/svg-icons/action/info';
 import FlatButton from 'material-ui/FlatButton';
 import ModalDialog from 'components/ModalDialog';
+import ModalSignIn from 'components/ModalSignIn';
 
 
 
 class HomePage extends Component { // eslint-disable-line react/prefer-stateless-function
+    constructor(props){
+        super(props);
+        this.onSignIn = this.onSignIn.bind(this);
+        this.onSignInSubmit = this.onSignInSubmit.bind(this);
+        this.onSignOut = this.onSignOut.bind(this);
+         this.state = {
+            showSignIn: false
+        };
+    }
+
+    onSignIn(){
+        this.setState({
+            showSignIn: true
+        });
+    }
+
+    onSignOut() {
+        this.props.onSignOut();
+    }
+
+    onSignInSubmit(login, password) {
+        this.props.onSignIn(login, password);
+        this.setState({
+            showSignIn: false
+        });
+    }
 
     render() {
         const modalContent =
@@ -43,13 +70,14 @@ class HomePage extends Component { // eslint-disable-line react/prefer-stateless
                 information about GitHub user repositories, existing issues, issue comments and
                 labels</p>
                 <h4>Security issue</h4>
-                <p>For managing issue labels you have to SignIn with your GitHub login and password. Take into account
+                <p>For managing issue labels you have to Sign In with your GitHub login and password. Take into account
                     that this tool does not have any additional security modules - your password will be transferred thru the
-                    standard HTTP request. This tool does not store any passwords or other user information, but if you don't
-                    sure don't use your real data.</p>
-                <p>Without authorization you still can view information about any existing GitHub user, repos and issues</p>
+                    standard HTTP request in base64 encoding. This tool does not store any passwords or other user information.</p>
+                <p>Without authorization you still can view information about any existing GitHub user, repos and issues
+                but you will be limited by 60 request per hour</p>
                 <h4>Main workflow</h4>
                 <ul>
+                    <li>Sign In or use tool without signing in</li>
                     <li>Enter GitHub user name and click on "GET INFO" or push "Enter" button</li>
                     <li>Choose user repository from the given list</li>
                     <li>If repo has issues, choose one from the list</li>
@@ -60,15 +88,25 @@ class HomePage extends Component { // eslint-disable-line react/prefer-stateless
 
         return (
             <div style={{padding: '20px'}}>
-                <AppBar
-                    title={<span className={styles.title}><FormattedMessage {...messages.title} /></span>}
-                    iconElementLeft={<IconButton><ActionInfo /></IconButton>}
-                    iconElementRight={<FlatButton label="Sign In" />}
-                />
                 <ModalDialog title="GitHub Issue Admin Tool"
                              closeButtonText="Let's start!"
                              content={modalContent}
+
                 />
+                <ModalSignIn isOpen={this.state.showSignIn}
+                             onSignInSubmit={this.onSignInSubmit}
+                />
+                <AppBar
+                    title={<span className={styles.title}><FormattedMessage {...messages.title} /></span>}
+                    iconElementLeft={<IconButton><ActionInfo /></IconButton>}
+
+                    iconElementRight={
+                        this.props.user.signed ?
+                        <FlatButton label="Sign Out" onTouchTap={this.onSignOut}/>:
+                        <FlatButton label="Sign In" onTouchTap={this.onSignIn} />}
+
+                />
+
                 <GitHubAuthor />
                 <IssuesTracker />
             </div>
@@ -86,7 +124,7 @@ const mapStateToProps = createStructuredSelector({
 
 function mapDispatchToProps(dispatch) {
     return {
-        onSignIn: (user, token, avatarURL) => dispatch(signIn(user, token, avatarURL)),
+        onSignIn: (login, password) => dispatch(signIn(login, password)),
         onSignOut: () => dispatch(signOut()),
         dispatch
     }

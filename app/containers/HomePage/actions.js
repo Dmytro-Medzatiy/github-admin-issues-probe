@@ -2,12 +2,11 @@
  * Created on 29.08.2016.
  */
 
-export function signIn(user, token, avatarURL){
+export function signIn(login, password){
     return {
         type: "SIGN_IN",
-        user,
-        token,
-        avatarURL
+        login,
+        password
     };
 }
 

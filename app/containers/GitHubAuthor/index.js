@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { changeGitHubAuthor, changeCurrentRepoIndex } from './actions';
 import { getGitHubAuthor, getRepoList, getCurrentRepoIndex } from './selectors';
+import { getSignedUser } from 'containers/HomePage/selectors';
 import { createStructuredSelector } from 'reselect';
 
 import styles from './styles.css';
@@ -21,7 +22,7 @@ import FlatButton from 'material-ui/FlatButton';
 
 import ModalWindow from 'components/ModalWindow';
 
-import { getDataUnauthorized } from 'api/restUtilities';
+import { getData } from 'api/restUtilities';
 import RepoSwitcher from 'components/RepoSwitcher';
 
 
@@ -32,12 +33,22 @@ class GitHubAuthor extends Component {
         this.getRepoList = this.getRepoList.bind(this);
         this.onChangeTextField = this.onChangeTextField.bind(this);
         this.onChangeCurrentRepo = this.onChangeCurrentRepo.bind(this);
+        this.getAuthorData = this.getAuthorData.bind(this);
         this.state = {
             notFound: false,
             avatarURL: defaultAvatar,
             errorMessage: '',
             authorName: ''
         };
+    }
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.signedUser.login != this.props.signedUser.login &&
+            nextProps.signedUser.login.length>0 && this.props.githubAuthor==undefined ) {
+            this.setState({
+                authorName: nextProps.signedUser.login
+            });
+            this.getAuthorData(nextProps.signedUser.login);
+        }
     }
 
     onChangeTextField() {
@@ -55,15 +66,13 @@ class GitHubAuthor extends Component {
         e.preventDefault();
         e.stopPropagation();
         const userName = this.state.authorName.trim();
-        console.log(userName);
-        const fetchOptions = {
-            "method": "GET",
-            "headers": {
-                "Authorization": "token "
-            }
-        };
-        const URL = 'https://api.github.com/users/' + userName;
-        getDataUnauthorized(URL).then(
+        this.getAuthorData(userName);
+    }
+
+    getAuthorData(author) {
+        const URL = 'https://api.github.com/users/' + author;
+        const {login, password} = this.props.signedUser;
+        getData(URL, login, password).then(
             response=> {
                 if (response.notFound) {
                     this.setState({
@@ -77,7 +86,7 @@ class GitHubAuthor extends Component {
                     const id = response.id;
                     const avatarURL = response.avatar_url;
 
-                    this.getRepoList().then(
+                    this.getRepoList(author).then(
                         repos=> {
                             this.props.onNewAuthor(author, id, avatarURL, repos);
                         }
@@ -92,16 +101,10 @@ class GitHubAuthor extends Component {
         );
     }
 
-    getRepoList(){
-        const userName = this.inputText.input.value;
-        const fetchOptions = {
-            "method": "GET",
-            "headers": {
-                "Authorization": "token "
-            }
-        };
-        const URL = 'https://api.github.com/users/'+userName+'/repos';
-        return getDataUnauthorized(URL).then(
+    getRepoList(author){
+        const {login, password} = this.props.signedUser;
+        const URL = 'https://api.github.com/users/'+author+'/repos';
+        return getData(URL, login, password).then(
             response=> {
                 return response.map((repo) => {
                     return {
@@ -119,7 +122,6 @@ class GitHubAuthor extends Component {
     }
 
     render(){
-        console.log("inside",this.props.currentRepoIndex);
 
         return(
             <Paper style={{width: '100%', minWidth:'360px',padding: '0 10px 10px 0', textAlign:"center"}} zDepth={1}>
@@ -169,7 +171,8 @@ class GitHubAuthor extends Component {
 const mapStateToProps = createStructuredSelector({
     githubAuthor: getGitHubAuthor(),
     repoList: getRepoList(),
-    currentRepoIndex: getCurrentRepoIndex()
+    currentRepoIndex: getCurrentRepoIndex(),
+    signedUser: getSignedUser()
 
 
 });

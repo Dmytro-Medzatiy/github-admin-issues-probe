@@ -1,12 +1,18 @@
 //"headers":{"Authorization": "token "}
 
-function getDataUnauthorized(URL, options={}){
 
+
+function getData(URL,login, password ){
+    const headers = login.length>0 ? {"Authorization": "Basic " + btoa(`${login}:${password}`)} : {"Accept": "application/json"};
+    const options={
+        "method": "GET",
+        "headers": headers
+    };
     return fetch(URL, options)
         .then(response => {
-            console.log('Received response: ' + JSON.stringify(response, null, 4));
-            console.log('Received response: ' + response.status);
-            console.log('Received response status text: ' + response.statusText);
+            //console.log('Received response: ' + JSON.stringify(response, null, 4));
+            //console.log('Received response: ' + response.status);
+            //console.log('Received response status text: ' + response.statusText);
 
             if (response.status >= 200 && response.status<300) {
                 return response.text()
@@ -45,7 +51,36 @@ function getDataUnauthorized(URL, options={}){
         });
 };
 
+function checkAuthorization(login, password) {
+    const URL = "https://api.github.com/users/" + login;
+    const fetchOptions = {
+        "headers": {
+            "Authorization": "Basic " + btoa(`${login}:${password}`)
+        }
+    };
+
+    return fetch(URL, fetchOptions)
+        .then(response => {
+            //console.log('Received response: ' + JSON.stringify(response, null, 4));
+            //console.log('Received response: ' + response.status);
+            //console.log('Received response status text: ' + response.statusText);
+
+            if (response.status >= 200 && response.status < 300) {
+                return true;
+            } else {
+                if (response.status == 401) {
+                    return false;
+                }
+            }
+
+        }).catch(
+            error => {
+                throw new Error(error)
+            }
+        );
+};
 
 export {
-    getDataUnauthorized,
+    getData,
+    checkAuthorization
 }

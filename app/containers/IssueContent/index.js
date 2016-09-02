@@ -7,7 +7,9 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { getCurrentIssue } from 'containers/IssuesTracker/selectors';
 import { getCommentsList } from './selectors';
+import { getSignedUser } from 'containers/HomePage/selectors';
 import { changeCommentsList } from './actions';
+
 import IssueLabels from 'components/IssueLabels';
 import styles from './styles.css';
 import Badge from 'material-ui/Badge';
@@ -17,7 +19,7 @@ import ActionVisibilityOff from 'material-ui/svg-icons/action/visibility-off';
 import  IconButton from 'material-ui/IconButton';
 import Divider from 'material-ui/Divider';
 import Toggle from 'material-ui/Toggle';
-import { getDataUnauthorized } from 'api/restUtilities';
+import { getData } from 'api/restUtilities';
 import ModalLoading from 'components/ModalLoading';
 
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
@@ -61,8 +63,8 @@ class IssueContent extends Component {
             const repoName = currentRepo.repoName;
             const issueNumber = currentIssue.issueNumber;
             const URL = "https://api.github.com/repos/" + owner + "/" + repoName + "/issues/"+issueNumber+"/comments";
-
-            getDataUnauthorized(URL).then(
+            const { login, password } = this.props.signedUser;
+            getData(URL, login, password).then(
                 response=> {
                     return response.map((comment) => {
                         return {
@@ -178,8 +180,9 @@ class IssueContent extends Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-   currentIssue: getCurrentIssue(),
-   comments: getCommentsList(),
+    currentIssue: getCurrentIssue(),
+    comments: getCommentsList(),
+    signedUser: getSignedUser()
 
 });
 

@@ -8,6 +8,7 @@ import { createStructuredSelector } from 'reselect';
 import { changeIssuesList, changeCurrentIssue } from './actions';
 import { getRepoList, getCurrentRepoIndex } from 'containers/GitHubAuthor/selectors';
 import { getCurrentIssueIndex, getCurrentIssue } from './selectors';
+import { getSignedUser } from 'containers/HomePage/selectors';
 
 import RepoSwitcher from 'components/RepoSwitcher';
 
@@ -15,7 +16,7 @@ import Paper from 'material-ui/Paper';
 import CircularProgress from 'material-ui/CircularProgress';
 import IssueList from 'components/IssueList';
 import IssueLabels from 'components/IssueLabels';
-import { getDataUnauthorized } from 'api/restUtilities';
+import { getData } from 'api/restUtilities';
 import IssueContent from 'containers/IssueContent';
 import ModalLoading from 'components/ModalLoading';
 
@@ -66,9 +67,9 @@ class IssuesTracker extends Component {
                 "Authorization": "token "
             }
         };
+        const { login, password } = this.props.signedUser;
 
-
-        getDataUnauthorized(fetchURL+issueIndex.toString()).then(
+        getData(fetchURL+issueIndex.toString(), login, password).then(
             response=> {
                 if (response.notFound) {
                     this.setState({
@@ -185,6 +186,7 @@ const mapStateToProps = createStructuredSelector({
     currentRepoIndex: getCurrentRepoIndex(),
     currentIssueIndex: getCurrentIssueIndex(),
     currentIssue: getCurrentIssue(),
+    signedUser: getSignedUser()
     
 });
 

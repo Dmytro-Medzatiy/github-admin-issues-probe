@@ -2,14 +2,12 @@
  * Created on 29.08.2016.
  */
 
-import { fromJS } from 'immutable';
 
 const initialState = {
     user: {
         signed: false,
-        name: "",
-        token: "",
-        avatarURL: "assets/images/default_avatar.png"
+        login: "",
+        password: ""
 
     }
 };
@@ -20,18 +18,16 @@ function signInReducer (state=initialState, action){
             return {
                 user: {
                     signed: true,
-                    name: action.name,
-                    token: action.token,
-                    avatarURL: action.avatarURL
+                    login: action.login,
+                    password: action.password
                 }
             };
         case "SIGN_OUT":
             return {
                 user: {
                     signed: false,
-                    name: "",
-                    token: "",
-                    avatarURL: "assets/images/default_avatar.png"
+                    login: "",
+                    password: ""
                 }
             };
         default:

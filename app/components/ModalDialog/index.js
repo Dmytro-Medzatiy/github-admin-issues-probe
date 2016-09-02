@@ -21,11 +21,6 @@ export default class ModalDialog extends React.Component {
         };
     }
 
-
-    handleOpen = () => {
-        this.setState({open: true});
-    };
-
     handleClose = () => {
         this.setState({open: false});
     };
@@ -45,6 +40,7 @@ export default class ModalDialog extends React.Component {
             <div>
                 <Dialog
                     title= {title}
+                    titleStyle={{backgroundColor: "#00bcd4", color: "white"}}
                     actions={actions}
                     modal={false}
                     open={this.state.open}
