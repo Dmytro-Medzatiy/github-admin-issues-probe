@@ -21,6 +21,7 @@ import Divider from 'material-ui/Divider';
 import Toggle from 'material-ui/Toggle';
 import { getData } from 'api/restUtilities';
 import ModalLoading from 'components/ModalLoading';
+import LabelEditor from 'components/LabelEditor';
 
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 
@@ -31,9 +32,32 @@ class IssueContent extends Component {
         super(props);
         this.state = {
             showingComments: false,
-            loadingComments: false
+            loadingComments: false,
+            showLabelsEditor: false,
+            authorizationRequest: false
         };
         this.onShowComments = this.onShowComments.bind(this);
+        this.onEditLabels = this.onEditLabels.bind(this);
+    }
+
+    onEditLabels(){
+        const { signedUser, currentIssue } = this.props;
+        if (signedUser.signed && signedUser.login == currentIssue.user.name) {
+            this.setState({
+                showLabelsEditor: true
+            });
+        } else {
+            if (!signedUser) {
+                this.setState({
+                    authorizationRequest: "You have to Sign In first"
+                });
+            } else {
+                this.setState({
+                    authorizationRequest: "You don't have rights to edit this Issue Labels!"
+                });
+            }
+
+        }
     }
 
     rawMarkup(text) {
@@ -149,10 +173,14 @@ class IssueContent extends Component {
                     {this.state.loadingComments ? <ModalLoading  isOpen={true}
                                   text="Loading Comments, wait a moment..."
                     /> : null }
+                    <LabelEditor labels={currentIssue.labels}
+                                             isOpen={this.state.showLabelsEditor} />
                     <div className="row">
                         {showCommentsButton}
                         <div className="col-xs center-xs">
-                            <IssueLabels labels={currentIssue.labels}/>
+                            <IssueLabels labels={currentIssue.labels}
+                                         onEditLabels={this.onEditLabels}
+                            />
                         </div>
                     </div>
                     <Divider />

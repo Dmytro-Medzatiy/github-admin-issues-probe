@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { changeGitHubAuthor, changeCurrentRepoIndex } from './actions';
+import { changeGitHubAuthor, changeCurrentRepoIndex, getCurrentRepoLabels } from './actions';
 import { getGitHubAuthor, getRepoList, getCurrentRepoIndex } from './selectors';
 import { getSignedUser } from 'containers/HomePage/selectors';
 import { createStructuredSelector } from 'reselect';
@@ -34,6 +34,7 @@ class GitHubAuthor extends Component {
         this.onChangeTextField = this.onChangeTextField.bind(this);
         this.onChangeCurrentRepo = this.onChangeCurrentRepo.bind(this);
         this.getAuthorData = this.getAuthorData.bind(this);
+
         this.state = {
             notFound: false,
             avatarURL: defaultAvatar,
@@ -60,6 +61,7 @@ class GitHubAuthor extends Component {
 
     onChangeCurrentRepo(index) {
         this.props.onNewRepo(index);
+        this.props.onGetLabels(index);
     }
 
     onSubmitAuthor(e) {
@@ -86,6 +88,7 @@ class GitHubAuthor extends Component {
                     const id = response.id;
                     const avatarURL = response.avatar_url;
 
+
                     this.getRepoList(author).then(
                         repos=> {
                             this.props.onNewAuthor(author, id, avatarURL, repos);
@@ -107,13 +110,16 @@ class GitHubAuthor extends Component {
         return getData(URL, login, password).then(
             response=> {
                 return response.map((repo) => {
-                    return {
-                        repoName: repo.name,
-                        owner: repo.owner.login,
-                        description: repo.description,
-                        stars: repo.stargazers_count,
-                        openIssues: repo.open_issues_count
-                    }
+                            return {
+                                repoName: repo.name,
+                                owner: repo.owner.login,
+                                description: repo.description,
+                                stars: repo.stargazers_count,
+                                openIssues: repo.open_issues_count
+                            }
+
+
+
                 });
             }
         ).catch(
@@ -181,6 +187,7 @@ function mapDispatchToProps(dispatch){
     return {
         onNewAuthor: (user, id, avatarURL, repos) => dispatch(changeGitHubAuthor(user, id, avatarURL, repos)),
         onNewRepo: (index) => dispatch(changeCurrentRepoIndex(index)),
+        onGetLabels: (index) => dispatch(getCurrentRepoLabels(index)),
         dispatch
     }
 }

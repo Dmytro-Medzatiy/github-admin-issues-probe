@@ -9,7 +9,8 @@ const initialState = {
         avatarURL: "",
         repos: []
     },
-    currentRepoIndex: null
+    currentRepoIndex: null,
+    availableLabels: []
 };
 
 function githubAuthorReducer(state=initialState,action) {
@@ -27,7 +28,12 @@ function githubAuthorReducer(state=initialState,action) {
         case "CHANGE_CURRENT_REPO_INDEX":
             return {
                 ...state,
-                currentRepoIndex:action.repoIndex
+                currentRepoIndex: action.repoIndex
+            };
+        case "SET_AVAILABLE_LABELS":
+            return {
+                ...state,
+                availableLabels: action.labels
             };
         default: {
             return state;

@@ -39,12 +39,11 @@ class IssueLabels extends Component {
         return (
             <div>
                 <div style={this.styles.wrapper}>
-
                     {labels}
-
                     <IconButton tooltip="Edit labels..."
                                 touch={true}
                                 style={{ height: "40px", marginTop: "-5px",marginLeft:"1em"}}
+                                onTouchTap={this.props.onEditLabels}
                                 tooltipPosition="top-right">
                         <ActionNoteAdd hoverColor="#ff9800"/>
                     </IconButton>

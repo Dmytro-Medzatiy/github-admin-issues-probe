@@ -203,6 +203,7 @@
     "redux": "3.5.2",
     "redux-immutable": "3.0.7",
     "redux-saga": "0.11.0",
+    "redux-thunk": "^2.1.0",
     "reselect": "2.5.3",
     "sanitize.css": "4.1.0",
     "warning": "3.0.0",
