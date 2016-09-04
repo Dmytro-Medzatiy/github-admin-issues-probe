@@ -84,7 +84,12 @@ class IssuesTracker extends Component {
                         name: response.user.login,
                         avatarURL: response.user.avatar_url
                     };
-                    const labels = response.labels;
+                    const labels = response.labels.map((label)=>{
+                        return {
+                            name: label.name,
+                            color: label.color
+                        }
+                    });
                     const state = response.state;
                     const comments = response.comments;
                     const body = response.body;

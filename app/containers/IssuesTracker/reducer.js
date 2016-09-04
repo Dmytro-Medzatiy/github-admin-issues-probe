@@ -19,7 +19,15 @@ function issuesReducer(state=initialState, action) {
             return {
                 ...state,
                 currentIssueIndex: action.issueIndex
-            }
+            };
+        case "CHANGE_CURRENT_ISSUE_LABELS":
+            return {
+                issues: state.issues
+                    .slice(0,action.issueIndex)
+                    .concat(Object.assign({},state.issues[action.issueIndex],{labels:action.newLabels}))
+                    .concat(state.issues.slice(action.issueIndex+1)),
+                currentIssueIndex: action.issueIndex
+            };
         default: return state;
     }
 }

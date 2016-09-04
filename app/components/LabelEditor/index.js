@@ -11,11 +11,6 @@ import {List, ListItem} from 'material-ui/List';
 import Checkbox from 'material-ui/Checkbox';
 import Chip from 'material-ui/Chip';
 
-import { defaultLabels } from './defaultLabels';
-
-
-
-
 export default class LabelEditor extends React.Component {
     constructor(props) {
         super(props);
@@ -30,17 +25,52 @@ export default class LabelEditor extends React.Component {
     onLabelsSubmit(e) {
         e.stopPropagation();
         e.preventDefault();
-        console.log(e.target.value);
+        const { checked } = this.state;
+        const newLabels = this.props.defaultLabels.filter((label,index)=>{
+            if (checked[index]) {
+                return label
+            }
+        });
+        this.props.onSubmitNewLabels(newLabels);
+        this.handleClose();
     }
 
     onCheck(e){
-        console.log(e.currentTarget.value + "=" +e.currentTarget.checked);
+        const checkBoxIndex = Number(e.currentTarget.value);
+        const newValue = Boolean(e.currentTarget.checked);
+        const { checked } = this.state;
+        const newChecked = checked.map((value,index)=>{
+            if (index==checkBoxIndex) {
+                return newValue
+            } else {
+                return value
+            }
+        });
+        this.setState({
+            checked: newChecked
+        });
+
     }
 
     componentWillReceiveProps(nextProps) {
+        const { defaultLabels, labels } = nextProps;
         if (nextProps.isOpen) {
+            const checked = defaultLabels.map((label)=>{
+                if (labels.find((x)=>x.name==label.name)!=undefined)  {
+                    return (
+                        true
+                    )
+                } else {
+                    return (
+                        false
+                    )
+                }
+
+            });
+
             this.setState({
                 open: true,
+                checked: checked
             });
         }
     }
@@ -54,37 +84,33 @@ export default class LabelEditor extends React.Component {
     };
 
     render() {
-        const actions = [
-            <RaisedButton
-                label="Cancel"
-                primary={true}
-                onTouchTap={this.handleClose}
-            />,
-            <RaisedButton
-                label="Submit"
-                secondary={true}
-                onTouchTap={this.handleSubmit}
-            />,
-        ];
         const chipStyle = {
-                margin: 4,
-            };
+            margin: 4,
+        };
 
-        const labels = defaultLabels.map((label,index) => {
-            const checked = this.props.labels.filter((x)=>x.name==label.name).length > 0;
+        const labels = this.props.defaultLabels.map((label, index) => {
+            //const checked = this.props.labels.filter((x)=>x.name==label.name).length > 0;
+
+            function getContrastYIQ(hexcolor) {
+                var r = parseInt(hexcolor.substr(0, 2), 16);
+                var g = parseInt(hexcolor.substr(2, 2), 16);
+                var b = parseInt(hexcolor.substr(4, 2), 16);
+                var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+                return (yiq >= 128) ? 'black' : 'white';
+            }
 
             return (
 
                 <ListItem style={{paddingTop: "5px", paddingBottom: "5px"}}
                           key={index}
                           leftCheckbox={<Checkbox
-                            defaultChecked={checked}
+                            defaultChecked={this.state.checked[index]}
                             value={index}
                             onCheck = {this.onCheck}
-                           />} >
+                           />}>
                     <Chip style={chipStyle}
-                          backgroundColor= {label.backgroundColor}
-                          labelColor = {label.color}>
+                          backgroundColor={"#"+label.color}
+                          labelColor={getContrastYIQ(label.color)}>
                         {label.name}
                     </Chip></ListItem>
             )
@@ -92,25 +118,36 @@ export default class LabelEditor extends React.Component {
         });
 
 
-
-
         return (
             <div>
 
                 <Dialog
                     title="Available Labels"
-                    actions={actions}
+
                     modal={false}
                     open={this.state.open}
                     onRequestClose={this.handleClose}
                     contentStyle={{width:"450px"}}
                 >
                     <form onSubmit={this.onLabelsSubmit}>
-                    <List>
-                        {labels}
-                    </List>
-                        <button type="Submit">Submit</button>
+                        <List>
+                            {labels}
+                        </List>
+                        <div style={{textAlign:"center"}}>
+                            <RaisedButton
+                                label="Cancel"
+                                primary={true}
+                                onTouchTap={this.handleClose}
+                            />
+                            <RaisedButton
+                                label="Submit"
+                                type="Submit"
+                                secondary={true}
+                                onTouchTap={this.onLabelsSubmit}
+                            />
+                        </div>
                     </form>
+
                 </Dialog>
             </div>
         );

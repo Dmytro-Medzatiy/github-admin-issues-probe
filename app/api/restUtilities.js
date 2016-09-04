@@ -80,7 +80,36 @@ function checkAuthorization(login, password) {
         );
 };
 
+function putData(URL,login, password, data ){
+    const headers = login.length>0 ? {"Authorization": "Basic " + btoa(`${login}:${password}`)} : {"Accept": "application/json"};
+    const options={
+        "method": "PUT",
+        "body": JSON.stringify(data),
+        "headers": headers
+    };
+    return fetch(URL, options)
+        .then(response => {
+            //console.log('Received response: ' + JSON.stringify(response, null, 4));
+            //console.log('Received response: ' + response.status);
+            //console.log('Received response status text: ' + response.statusText);
+
+            if (response.status >= 200 && response.status<300) {
+                return response.status
+            }
+            else {
+                if (response.status == 404 ){
+                    return {
+                        notFound: true
+                    }
+                } else {
+                    throw new Error(response.statusText);
+                }
+            }
+        });
+};
+
 export {
     getData,
-    checkAuthorization
+    checkAuthorization,
+    putData
 }

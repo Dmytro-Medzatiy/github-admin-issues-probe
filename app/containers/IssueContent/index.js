@@ -6,9 +6,11 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { getCurrentIssue } from 'containers/IssuesTracker/selectors';
+import { getAvailableLabels } from 'containers/GitHubAuthor/selectors';
 import { getCommentsList } from './selectors';
 import { getSignedUser } from 'containers/HomePage/selectors';
 import { changeCommentsList } from './actions';
+import { onUpdateLabels } from 'containers/IssuesTracker/actions';
 
 import IssueLabels from 'components/IssueLabels';
 import styles from './styles.css';
@@ -19,7 +21,7 @@ import ActionVisibilityOff from 'material-ui/svg-icons/action/visibility-off';
 import  IconButton from 'material-ui/IconButton';
 import Divider from 'material-ui/Divider';
 import Toggle from 'material-ui/Toggle';
-import { getData } from 'api/restUtilities';
+import { getData, putData } from 'api/restUtilities';
 import ModalLoading from 'components/ModalLoading';
 import LabelEditor from 'components/LabelEditor';
 
@@ -38,11 +40,39 @@ class IssueContent extends Component {
         };
         this.onShowComments = this.onShowComments.bind(this);
         this.onEditLabels = this.onEditLabels.bind(this);
+        this.onNewLabels = this.onNewLabels.bind(this);
+       // this.postLabels = this.postLabels.bind(this);
     }
 
+    onNewLabels(newLabels){
+        console.log("received new labels", newLabels, this.props.currentIssue.issueNumber);
+        //push to state and post thru the async action
+        this.props.onChangeLabels(newLabels, this.props.currentIssue.issueNumber);
+
+    }
+
+ /*   postLabels(){
+        const { currentRepo, comments, currentIssue } = this.props;
+        const { login, password } = this.props.signedUser;
+        const owner = currentRepo.owner;
+        const repoName = currentRepo.repoName;
+        const issueNumber = currentIssue.issueNumber;
+        const data = [
+            {
+                name:"bug"
+            }
+        ];
+        const URL = "https://api.github.com/repos/"+owner+"/"+repoName+"/issues/"+issueNumber+"/labels";
+        putData(URL, login, password, data).then(
+            res=> {
+                console.log("Finish");
+            }
+        )
+    }
+*/
     onEditLabels(){
         const { signedUser, currentIssue } = this.props;
-        if (signedUser.signed && signedUser.login == currentIssue.user.name) {
+        if (signedUser.signed && signedUser.login.toUpperCase() == currentIssue.user.name.toUpperCase()) {
             this.setState({
                 showLabelsEditor: true
             });
@@ -68,7 +98,8 @@ class IssueContent extends Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.currentIssue.issueNumber!=this.props.currentIssue.issueNumber) {
             this.setState({
-                showingComments: false
+                showingComments: false,
+                showLabelsEditor: false
             });
             this.props.onChangeComments([]);
         }
@@ -168,13 +199,18 @@ class IssueContent extends Component {
                 commentsContent = "";
             }
 
+
+
             return (
                 <div>
                     {this.state.loadingComments ? <ModalLoading  isOpen={true}
                                   text="Loading Comments, wait a moment..."
                     /> : null }
                     <LabelEditor labels={currentIssue.labels}
-                                             isOpen={this.state.showLabelsEditor} />
+                                 defaultLabels={this.props.availableLabels}
+                                 onSubmitNewLabels={this.onNewLabels}
+                                 isOpen={this.state.showLabelsEditor} />
+
                     <div className="row">
                         {showCommentsButton}
                         <div className="col-xs center-xs">
@@ -210,13 +246,15 @@ class IssueContent extends Component {
 const mapStateToProps = createStructuredSelector({
     currentIssue: getCurrentIssue(),
     comments: getCommentsList(),
-    signedUser: getSignedUser()
+    signedUser: getSignedUser(),
+    availableLabels: getAvailableLabels()
 
 });
 
 function mapDispatchToProps(dispatch) {
     return {
         onChangeComments: (commentsList) => dispatch(changeCommentsList(commentsList)),
+        onChangeLabels: (newLabels, issueNumber) => dispatch(onUpdateLabels(newLabels,issueNumber)),
         dispatch
     }
 }

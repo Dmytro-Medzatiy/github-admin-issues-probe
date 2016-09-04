@@ -16,3 +16,9 @@ export function signOut () {
     };
 }
 
+export function apiError (errorText) {
+    return {
+        type: "API_ERROR",
+        errorText
+    }
+}
