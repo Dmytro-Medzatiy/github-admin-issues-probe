@@ -16,7 +16,8 @@ import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import Avatar from 'material-ui/Avatar';
-import defaultAvatar from 'assets/images/default_avatar.jpg';
+import GithubAuthorInput from 'components/GithubAuthorInput';
+
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 
@@ -31,43 +32,26 @@ class GitHubAuthor extends Component {
         super(props);
         this.onSubmitAuthor = this.onSubmitAuthor.bind(this);
         this.getRepoList = this.getRepoList.bind(this);
-        this.onChangeTextField = this.onChangeTextField.bind(this);
+        
         this.onChangeCurrentRepo = this.onChangeCurrentRepo.bind(this);
         this.getAuthorData = this.getAuthorData.bind(this);
 
-        this.state = {
-            notFound: false,
-            avatarURL: defaultAvatar,
-            errorMessage: '',
-            authorName: ''
-        };
     }
     componentWillReceiveProps(nextProps) {
+        console.log("newProps", nextProps.signedUser, this.props.signedUser, this.props.githubAuthor);
         if (nextProps.signedUser.login != this.props.signedUser.login &&
-            nextProps.signedUser.login.length>0 && this.props.githubAuthor==undefined ) {
-            this.setState({
-                authorName: nextProps.signedUser.login
-            });
+            nextProps.signedUser.login.length>0 && this.props.githubAuthor.name.length == 0 ) {
+            console.log("Hm, let's get Author Data!!!");
             this.getAuthorData(nextProps.signedUser.login);
         }
     }
 
-    onChangeTextField() {
-        const inputValue = this.inputText.input.value;
-        this.setState({
-            authorName: inputValue
-        });
-    }
-
     onChangeCurrentRepo(index) {
-        this.props.onNewRepo(index);
+        //this.props.onNewRepo(index);
         this.props.onGetLabels(index);
     }
 
-    onSubmitAuthor(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const userName = this.state.authorName.trim();
+    onSubmitAuthor(userName) {
         this.getAuthorData(userName);
     }
 
@@ -77,11 +61,7 @@ class GitHubAuthor extends Component {
         getData(URL, login, password).then(
             response=> {
                 if (response.notFound) {
-                    this.setState({
-                        notFound: true,
-                        avatarURL: defaultAvatar,
-                        error: 'Not Found'
-                    });
+                    
                     this.props.onNewAuthor("", "", "", []);
                 } else {
                     const author = response.login;
@@ -94,11 +74,7 @@ class GitHubAuthor extends Component {
                             this.props.onNewAuthor(author, id, avatarURL, repos);
                         }
                     );
-                    this.setState({
-                        notFound: false,
-                        avatarURL: avatarURL,
-                        error: ''
-                    });
+                    
                 }
             }
         );
@@ -128,46 +104,20 @@ class GitHubAuthor extends Component {
     }
 
     render(){
-
+        const { githubAuthor } = this.props;
         return(
             <Paper style={{width: '100%', minWidth:'360px',padding: '0 10px 10px 0', textAlign:"center"}} zDepth={1}>
                 <div className="container-fluid">
-                    <div className="row center-xs">
-                        <div className="col-lg-2">
-                            <div className="box">
-                                <Avatar src={this.state.avatarURL} className={styles.avatar}/>
-                            </div>
-                        </div>
-                        <div className="col-lg-6">
-                            <div className="box">
-                                <form onSubmit={this.onSubmitAuthor}>
-                                    <TextField
-                                        hintText="GitHub Author Name"
-                                        ref={me => this.inputText = me}
-                                        floatingLabelText="GitHub Author Name"
-                                        errorText={this.state.error}
-                                        value={this.state.authorName}
-                                        onChange={this.onChangeTextField}
-                                    />
-                                </form>
-                            </div>
-                        </div>
-                        <div className="col-lg-4"
-                             style={{display: "flex",flexDirection: "column", justifyContent: "center"}}>
-                            <FlatButton
-                                onClick={this.onSubmitAuthor}
-                                style={{marginLeft: "1em", marginTop: "1.5em"}}
-                                label="Get info"
-                            />
-                        </div>
-                        <div>
-                            <RepoSwitcher
-                                repos={this.props.repoList}
-                                onChangeCurrentRepo={this.onChangeCurrentRepo}
-                                currentRepo={this.props.currentRepoIndex}
-                            />
-                        </div>
-                    </div>
+                     <GithubAuthorInput author={githubAuthor.name}
+                                           onAuthorSubmit={this.onSubmitAuthor}
+                                           repos={this.props.repoList}
+                                           onChangeCurrentRepo={this.onChangeCurrentRepo}
+                                           currentRepo={this.props.currentRepoIndex}
+                                           src={githubAuthor.avatarURL}
+
+                        />
+
+
                 </div>
             </Paper>
         );

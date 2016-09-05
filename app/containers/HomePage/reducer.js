@@ -8,7 +8,6 @@ const initialState = {
         signed: false,
         login: "",
         password: ""
-
     }
 };
 

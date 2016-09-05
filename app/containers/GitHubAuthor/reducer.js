@@ -2,12 +2,15 @@
  * Created by Admin on 30.08.2016.
  */
 
+import defaultAvatar from 'assets/images/default_avatar.jpg';
+
 const initialState = {
     githubAuthor: {
-        user: "",
+        name: "",
         id: "",
-        avatarURL: "",
-        repos: []
+        avatarURL: defaultAvatar,
+        repos: [],
+        notFound: false
     },
     currentRepoIndex: null,
     availableLabels: []
@@ -20,8 +23,9 @@ function githubAuthorReducer(state=initialState,action) {
                 githubAuthor: {
                     name: action.name,
                     id: action.id,
-                    avatarURL: action.avatarURL,
+                    avatarURL: action.name.length > 0 ? action.avatarURL : defaultAvatar,
                     repos: action.repos,
+                    notFound: false
                 },
                 currentRepoIndex: null
             };

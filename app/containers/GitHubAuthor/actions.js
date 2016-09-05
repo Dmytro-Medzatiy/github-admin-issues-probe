@@ -1,6 +1,7 @@
 /**
  * Created by Admin on 30.08.2016.
  */
+
 import { getData } from 'api/restUtilities';
 
 export function changeGitHubAuthor(name, id, avatarURL, repos) {
@@ -14,7 +15,7 @@ export function changeGitHubAuthor(name, id, avatarURL, repos) {
 }
 
 export function changeCurrentRepoIndex(repoIndex) {
-
+    
     return {
         type: "CHANGE_CURRENT_REPO_INDEX",
         repoIndex
@@ -22,7 +23,6 @@ export function changeCurrentRepoIndex(repoIndex) {
 }
 
 export function setAvailableLabels(labels) {
-    console.log(labels);
     return {
         type: "SET_AVAILABLE_LABELS",
         labels
@@ -50,7 +50,8 @@ export function getCurrentRepoLabels(repoIndex){
             }
         ).then(
             labels => {
-                dispatch(setAvailableLabels(labels))
+                dispatch(setAvailableLabels(labels));
+                dispatch(changeCurrentRepoIndex(repoIndex));
             }
         ).catch(
             error => { throw new Error(error) }

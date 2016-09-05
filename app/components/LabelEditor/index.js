@@ -20,11 +20,11 @@ export default class LabelEditor extends React.Component {
         };
         this.onCheck = this.onCheck.bind(this);
         this.onLabelsSubmit = this.onLabelsSubmit.bind(this);
+        this.handleClose = this.handleClose.bind(this);
     }
 
-    onLabelsSubmit(e) {
-        e.stopPropagation();
-        e.preventDefault();
+    onLabelsSubmit() {
+
         const { checked } = this.state;
         const newLabels = this.props.defaultLabels.filter((label,index)=>{
             if (checked[index]) {
@@ -129,7 +129,7 @@ export default class LabelEditor extends React.Component {
                     onRequestClose={this.handleClose}
                     contentStyle={{width:"450px"}}
                 >
-                    <form onSubmit={this.onLabelsSubmit}>
+
                         <List>
                             {labels}
                         </List>
@@ -141,12 +141,11 @@ export default class LabelEditor extends React.Component {
                             />
                             <RaisedButton
                                 label="Submit"
-                                type="Submit"
                                 secondary={true}
                                 onTouchTap={this.onLabelsSubmit}
                             />
                         </div>
-                    </form>
+
 
                 </Dialog>
             </div>

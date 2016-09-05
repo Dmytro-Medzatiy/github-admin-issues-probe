@@ -45,6 +45,7 @@ export default class ModalDialog extends React.Component {
                     modal={false}
                     open={this.state.open}
                     onRequestClose={this.handleClose}
+                    autoScrollBodyContent={true}
                     actionsContainerStyle={{textAlign:"center"}}
                 >
                     {this.props.content}

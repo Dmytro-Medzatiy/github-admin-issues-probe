@@ -45,8 +45,11 @@ class IssueContent extends Component {
     }
 
     onNewLabels(newLabels){
-        console.log("received new labels", newLabels, this.props.currentIssue.issueNumber);
-        //push to state and post thru the async action
+
+        this.setState({
+            showLabelsEditor: false
+        });
+        //push to state and post through the async action
         this.props.onChangeLabels(newLabels, this.props.currentIssue.issueNumber);
 
     }
