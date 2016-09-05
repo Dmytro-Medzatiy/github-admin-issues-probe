@@ -8,6 +8,8 @@ import FlatButton from 'material-ui/FlatButton';
 import ActionNoteAdd from 'material-ui/svg-icons/action/note-add';
 import IconButton from 'material-ui/IconButton';
 
+import { getContrastYIQ } from 'api/colorIssues';
+
 class IssueLabels extends Component {
     constructor(props){
         super(props);
@@ -25,12 +27,11 @@ class IssueLabels extends Component {
     render() {
         const labels = this.props.labels!=undefined && this.props.labels.length >0 ? this.props.labels.map((label,index) => {
             const color = "#"+label.color;
-            const oppositeColors = ['#EE0701','#128A0C','#CC317C'];
-            const labelColor = oppositeColors.indexOf(color.toUpperCase())>=0 ? "white": "black";
+            const labelTextColor = getContrastYIQ(label.color);
             return (<Chip key={index}
                           style={this.styles.chip}
                           backgroundColor= {color}
-                          labelColor = {labelColor}
+                          labelColor = {labelTextColor}
             >
                 {label.name}
             </Chip>)

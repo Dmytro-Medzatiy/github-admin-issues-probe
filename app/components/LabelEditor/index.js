@@ -11,6 +11,8 @@ import {List, ListItem} from 'material-ui/List';
 import Checkbox from 'material-ui/Checkbox';
 import Chip from 'material-ui/Chip';
 
+import { getContrastYIQ } from 'api/colorIssues';
+
 export default class LabelEditor extends React.Component {
     constructor(props) {
         super(props);
@@ -20,11 +22,11 @@ export default class LabelEditor extends React.Component {
         };
         this.onCheck = this.onCheck.bind(this);
         this.onLabelsSubmit = this.onLabelsSubmit.bind(this);
-        this.handleClose = this.handleClose.bind(this);
     }
 
-    onLabelsSubmit() {
-
+    onLabelsSubmit(e) {
+        e.stopPropagation();
+        e.preventDefault();
         const { checked } = this.state;
         const newLabels = this.props.defaultLabels.filter((label,index)=>{
             if (checked[index]) {
@@ -89,16 +91,6 @@ export default class LabelEditor extends React.Component {
         };
 
         const labels = this.props.defaultLabels.map((label, index) => {
-            //const checked = this.props.labels.filter((x)=>x.name==label.name).length > 0;
-
-            function getContrastYIQ(hexcolor) {
-                var r = parseInt(hexcolor.substr(0, 2), 16);
-                var g = parseInt(hexcolor.substr(2, 2), 16);
-                var b = parseInt(hexcolor.substr(4, 2), 16);
-                var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-                return (yiq >= 128) ? 'black' : 'white';
-            }
-
             return (
 
                 <ListItem style={{paddingTop: "5px", paddingBottom: "5px"}}
@@ -129,7 +121,7 @@ export default class LabelEditor extends React.Component {
                     onRequestClose={this.handleClose}
                     contentStyle={{width:"450px"}}
                 >
-
+                    <form onSubmit={this.onLabelsSubmit}>
                         <List>
                             {labels}
                         </List>
@@ -141,11 +133,12 @@ export default class LabelEditor extends React.Component {
                             />
                             <RaisedButton
                                 label="Submit"
+                                type="Submit"
                                 secondary={true}
                                 onTouchTap={this.onLabelsSubmit}
                             />
                         </div>
-
+                    </form>
 
                 </Dialog>
             </div>
