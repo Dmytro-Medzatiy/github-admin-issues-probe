@@ -10,14 +10,11 @@ function getData(URL,login, password ){
     };
     return fetch(URL, options)
         .then(response => {
-            //console.log('Received response: ' + JSON.stringify(response, null, 4));
-            //console.log('Received response: ' + response.status);
-            //console.log('Received response status text: ' + response.statusText);
 
             if (response.status >= 200 && response.status<300) {
                 return response.text()
                     .then(responseText => {
-                        console.log('Server response: ' + responseText);
+                        //console.log('Server response: ' + responseText);
                         let jsonData = undefined;
                         try{
                             jsonData = JSON.parse(responseText);
@@ -61,9 +58,6 @@ function checkAuthorization(login, password) {
 
     return fetch(URL, fetchOptions)
         .then(response => {
-            //console.log('Received response: ' + JSON.stringify(response, null, 4));
-            //console.log('Received response: ' + response.status);
-            //console.log('Received response status text: ' + response.statusText);
 
             if (response.status >= 200 && response.status < 300) {
                 return true;
@@ -89,9 +83,6 @@ function putData(URL,login, password, data ){
     };
     return fetch(URL, options)
         .then(response => {
-            //console.log('Received response: ' + JSON.stringify(response, null, 4));
-            //console.log('Received response: ' + response.status);
-            //console.log('Received response status text: ' + response.statusText);
 
             if (response.status >= 200 && response.status<300) {
                 return response.status
@@ -108,8 +99,29 @@ function putData(URL,login, password, data ){
         });
 };
 
+function getRepoList(author, login, password){
+
+    const URL = 'https://api.github.com/users/'+author+'/repos';
+    return getData(URL, login, password).then(
+        response=> {
+            return response.map((repo) => {
+                return {
+                    repoName: repo.name,
+                    owner: repo.owner.login,
+                    description: repo.description,
+                    stars: repo.stargazers_count,
+                    openIssues: repo.open_issues_count
+                }
+            });
+        }
+    ).catch(
+        error => { throw new Error(error) }
+    );
+}
+
 export {
     getData,
     checkAuthorization,
-    putData
+    putData,
+    getRepoList
 }

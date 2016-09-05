@@ -41,7 +41,7 @@ class IssueContent extends Component {
         this.onShowComments = this.onShowComments.bind(this);
         this.onEditLabels = this.onEditLabels.bind(this);
         this.onNewLabels = this.onNewLabels.bind(this);
-       // this.postLabels = this.postLabels.bind(this);
+
     }
 
     onNewLabels(newLabels){
@@ -54,25 +54,6 @@ class IssueContent extends Component {
 
     }
 
- /*   postLabels(){
-        const { currentRepo, comments, currentIssue } = this.props;
-        const { login, password } = this.props.signedUser;
-        const owner = currentRepo.owner;
-        const repoName = currentRepo.repoName;
-        const issueNumber = currentIssue.issueNumber;
-        const data = [
-            {
-                name:"bug"
-            }
-        ];
-        const URL = "https://api.github.com/repos/"+owner+"/"+repoName+"/issues/"+issueNumber+"/labels";
-        putData(URL, login, password, data).then(
-            res=> {
-                console.log("Finish");
-            }
-        )
-    }
-*/
     onEditLabels(){
         const { signedUser, currentIssue } = this.props;
         if (signedUser.signed && signedUser.login.toUpperCase() == currentIssue.user.name.toUpperCase()) {
