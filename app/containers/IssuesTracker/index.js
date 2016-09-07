@@ -159,9 +159,7 @@ class IssuesTracker extends Component {
                                     <h4 style={{padding:"15px 0 15px 15px", margin:"0"}}>Issues</h4>
                                 </div>
                                 {waiter}
-
                                 {list}
-
                             </Paper>
                         </div>
                     </div>
@@ -173,9 +171,7 @@ class IssuesTracker extends Component {
                                         Issue #{this.props.currentIssueIndex+1}
                                     </h4>
                                 </div>
-
                                 {issueContent}
-
                             </Paper>
                         </div>
                     </div>
