@@ -7,8 +7,10 @@ const initialState = {
     user: {
         signed: false,
         login: "",
-        password: ""
-    }
+        password: "",
+        errorMessage: ""
+    },
+    signInDialog: false
 };
 
 function signInReducer (state=initialState, action){
@@ -16,18 +18,26 @@ function signInReducer (state=initialState, action){
         case "SIGN_IN":
             return {
                 user: {
-                    signed: true,
+                    signed: action.signed,
                     login: action.login,
-                    password: action.password
-                }
+                    password: action.password,
+                    errorMessage: action.errorMessage
+                },
+                signInDialog: !action.signed
             };
         case "SIGN_OUT":
             return {
                 user: {
                     signed: false,
                     login: "",
-                    password: ""
+                    password: "",
+                    errorMessage: ""
                 }
+            };
+        case "ON_SIGN_IN_ACTION":
+            return {
+                ...state,
+                signInDialog: action.isOpen
             };
         default:
             return state;

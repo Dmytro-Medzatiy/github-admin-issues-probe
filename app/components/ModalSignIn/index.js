@@ -21,7 +21,7 @@ export default class ModalSignIn extends React.Component {
         super(props);
         this.state = {
             open: false,
-            error: "",
+            errorMessage: "",
             login:"",
             password: ""
         };
@@ -36,32 +36,8 @@ export default class ModalSignIn extends React.Component {
         e.preventDefault();
 
         const { login, password } = this.state;
-        console.log("password:", password);
-        checkAuthorization(login, password)
-            .then(
-                response => {
-                    if (response) {
-                        this.setState({
-                            open: false,
-                            error: "",
-                            login:"",
-                            password: ""
-                        });
 
-                        this.props.onSignInSubmit(login, password);
-                        this.handleClose();
-
-                    } else {
-                        this.setState({
-                            error: "Wrong Login or Password",
-
-                        });
-                    }
-                }
-            )
-
-
-
+        this.props.onSignInSubmit(login, password);
     }
 
     onChangeLoginField(){
@@ -88,6 +64,12 @@ export default class ModalSignIn extends React.Component {
                 open:false
             });
         }
+
+        if (nextProps.errorMessage!= this.state.errorMessage) {
+            this.setState({
+                errorMessage: nextProps.errorMessage
+            });
+        }
     }
 
 
@@ -96,7 +78,8 @@ export default class ModalSignIn extends React.Component {
     };
 
     handleClose = () => {
-        this.setState({open: false});
+        this.props.onSignInClose();
+        //this.setState({open: false});
     };
 
     render() {
@@ -122,7 +105,7 @@ export default class ModalSignIn extends React.Component {
                             hintText="GitHub Login"
                         ref={me => this.inputLogin = me}
                         floatingLabelText="GitHub Login"
-                        errorText={this.state.error}
+                        errorText={this.state.errorMessage}
                         value={this.state.login}
                         onChange={this.onChangeLoginField}
                         />
@@ -131,7 +114,7 @@ export default class ModalSignIn extends React.Component {
                             hintText="Password"
                             ref={me => this.inputPassword = me}
 
-                            errorText={this.state.error}
+                            errorText={this.state.errorMessage}
                             value={this.state.password}
                             onChange={this.onChangePasswordField}
                             type="password"

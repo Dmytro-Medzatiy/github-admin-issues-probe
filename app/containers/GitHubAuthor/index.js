@@ -12,6 +12,7 @@ import { createStructuredSelector } from 'reselect';
 import Paper from 'material-ui/Paper';
 
 import GithubAuthorInput from 'components/GithubAuthorInput';
+import RepoSwitcher from 'components/RepoSwitcher';
 
 class GitHubAuthor extends Component {
     constructor(props) {
@@ -21,9 +22,9 @@ class GitHubAuthor extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        //Get repos of Signed User if currentGitHubAuthor is empty
+        //Get repos of Signed User if currentGitHubAuthor is empty or NotFound
         if (nextProps.signedUser.login != this.props.signedUser.login &&
-            nextProps.signedUser.login.length>0 && this.props.githubAuthor.name.length == 0 ) {
+            nextProps.signedUser.login.length>0 && this.props.githubAuthor.id.length == 0 ) {
                 this.props.onChangeGitHubAuthor(nextProps.signedUser.login);
         }
     }
@@ -41,13 +42,21 @@ class GitHubAuthor extends Component {
         return(
             <Paper style={{width: '100%', minWidth:'360px',padding: '0 10px 10px 0', textAlign:"center"}} zDepth={1}>
                 <div className="container-fluid">
-                     <GithubAuthorInput author={githubAuthor.name}
-                                        repos={repoList}
-                                        currentRepo={currentRepoIndex}
-                                        src={githubAuthor.avatarURL}
-                                        onAuthorSubmit={this.onSubmitAuthor}
-                                        onChangeCurrentRepo={this.onChangeCurrentRepo}
-                     />
+                    <div className="row center-xs">
+                        <div className="col-lg-7">
+                            <GithubAuthorInput author={githubAuthor.name}
+                                               src={githubAuthor.avatarURL}
+                                               errorMessage={githubAuthor.errorMessage}
+                                               onAuthorSubmit={this.onSubmitAuthor}
+                            />
+                        </div>
+                        <div className="col-lg-5">
+                            <RepoSwitcher repos={repoList}
+                                          currentRepo={currentRepoIndex}
+                                          onChangeCurrentRepo={this.onChangeCurrentRepo}
+                            />
+                        </div>
+                    </div>
                 </div>
             </Paper>
         );

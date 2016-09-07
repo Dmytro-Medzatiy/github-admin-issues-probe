@@ -32,8 +32,8 @@ export function onUpdateLabels (newLabels, issueNumber) {
         const owner = getState().get('githubAuthor').githubAuthor.name;
         const repoIndex = getState().get('githubAuthor').currentRepoIndex;
         const repoName = getState().get('githubAuthor').githubAuthor.repos[repoIndex].repoName;
-        const login = getState().get('user').user.login;
-        const password = getState().get('user').user.password;
+        const login = getState().get('globals').user.login;
+        const password = getState().get('globals').user.password;
         const data = newLabels.map((label)=>{
             return {
                 name: label.name

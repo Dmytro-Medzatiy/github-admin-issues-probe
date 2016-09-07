@@ -47,7 +47,7 @@ export default function createReducer(asyncReducers) {
     return combineReducers({
         route: routeReducer,
         language: languageProviderReducer,
-        user: signInReducer,
+        globals: signInReducer,
         githubAuthor: githubAuthorReducer,
         issues: issuesReducer,
         comments: commentsReducer,
