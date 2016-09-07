@@ -4,28 +4,30 @@
 
 import { getData, getRepoList } from 'api/restUtilities';
 
-export function setNewGitHubAuthor(name, id, avatarURL, repos,error) {
+
+export function setNewGitHubAuthor(name, id, avatarURL, repos, errorMessage) {
     return {
         type: "CHANGE_GITHUB_AUTHOR",
         name,
         id,
         avatarURL,
         repos,
-        error
+        errorMessage
     }
 }
 
 export function changeGitHubAuthor(author) {
     return (dispatch, getState) => {
         const URL = 'https://api.github.com/users/' + author;
-        const login = getState().get('user').user.login;
-        const password = getState().get('user').user.password;
+        const signedUser = getState().get('globals').user;
+        const login = signedUser.login;
+        const password = signedUser.password;
 
         getData(URL, login, password).then(
             response=> {
                 if (response.notFound) {
                     const error = "Wrong GitHub User Name";
-                    dispatch(setNewGitHubAuthor("","","",[],error));
+                    dispatch(setNewGitHubAuthor(author,"","",[],error));
                 } else {
                     const author = response.login;
                     const id = response.id;
@@ -61,10 +63,15 @@ export function setAvailableLabels(labels) {
 
 export function changeCurrentRepo(repoIndex){
     return (dispatch, getState) => {
-        const author = getState().get('githubAuthor').githubAuthor.name;
-        const repoName = getState().get('githubAuthor').githubAuthor.repos[repoIndex].repoName;
-        const login = getState().get('user').user.login;
-        const password = getState().get('user').user.password;
+
+        const githubAuthor = getState().get('githubAuthor').githubAuthor;
+        const author = githubAuthor.name;
+        const repoName = githubAuthor.repos[repoIndex].repoName;
+
+        const signedUser = getState().get('globals').user;
+        const login = signedUser.login;
+        const password = signedUser.password;
+
         const URL = 'https://api.github.com/repos/ipselon/bootstrap-prepack/labels';
 
         //get Available Labels for new current repo

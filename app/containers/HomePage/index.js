@@ -20,8 +20,8 @@ import IssuesTracker from 'containers/IssuesTracker';
 
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { signIn, signOut} from './actions';
-import { getSignedUser } from './selectors';
+import { signIn, signOut, onSignInAction } from './actions';
+import { getSignedUser, getShowSignInDialog } from './selectors';
 
 
 import RaisedButton from 'material-ui/RaisedButton';
@@ -37,18 +37,19 @@ import ModalSignIn from 'components/ModalSignIn';
 class HomePage extends Component { // eslint-disable-line react/prefer-stateless-function
     constructor(props){
         super(props);
-        this.onSignIn = this.onSignIn.bind(this);
+        this.onSignInAction = this.onSignInAction.bind(this);
         this.onSignInSubmit = this.onSignInSubmit.bind(this);
         this.onSignOut = this.onSignOut.bind(this);
-         this.state = {
-            showSignIn: false
-        };
+        this.onSignInClose = this.onSignInClose.bind(this);
+
     }
 
-    onSignIn(){
-        this.setState({
-            showSignIn: true
-        });
+    onSignInAction(){
+        this.props.onSignInAction(true);
+    }
+
+    onSignInClose() {
+        this.props.onSignInAction(false);
     }
 
     onSignOut() {
@@ -57,9 +58,6 @@ class HomePage extends Component { // eslint-disable-line react/prefer-stateless
 
     onSignInSubmit(login, password) {
         this.props.onSignIn(login, password);
-        this.setState({
-            showSignIn: false
-        });
     }
 
     render() {
@@ -86,6 +84,8 @@ class HomePage extends Component { // eslint-disable-line react/prefer-stateless
                 </ul>
             </div>;
 
+        const { user } = this.props;
+
         return (
             <div style={{padding: '20px'}}>
                 <ModalDialog title="GitHub Issue Admin Tool"
@@ -93,8 +93,10 @@ class HomePage extends Component { // eslint-disable-line react/prefer-stateless
                              content={modalContent}
 
                 />
-                <ModalSignIn isOpen={this.state.showSignIn}
+                <ModalSignIn isOpen={this.props.showSignInDialog}
+                             errorMessage={user.errorMessage}
                              onSignInSubmit={this.onSignInSubmit}
+                             onSignInClose = {this.onSignInClose}
                 />
                 <AppBar
                     title={<span className={styles.title}><FormattedMessage {...messages.title} /></span>}
@@ -103,7 +105,7 @@ class HomePage extends Component { // eslint-disable-line react/prefer-stateless
                     iconElementRight={
                         this.props.user.signed ?
                         <FlatButton label="Sign Out" onTouchTap={this.onSignOut}/>:
-                        <FlatButton label="Sign In" onTouchTap={this.onSignIn} />}
+                        <FlatButton label="Sign In" onTouchTap={this.onSignInAction} />}
 
                 />
 
@@ -119,13 +121,15 @@ HomePage.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
-    user: getSignedUser()
+    user: getSignedUser(),
+    showSignInDialog: getShowSignInDialog()
 });
 
 function mapDispatchToProps(dispatch) {
     return {
         onSignIn: (login, password) => dispatch(signIn(login, password)),
         onSignOut: () => dispatch(signOut()),
+        onSignInAction: (isOpen) => dispatch(onSignInAction(isOpen)),
         dispatch
     }
 };

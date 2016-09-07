@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
-import RepoSwitcher from 'components/RepoSwitcher';
+
 import Avatar from 'material-ui/Avatar';
 
 class GithubAuthorInput extends Component {
@@ -20,9 +20,10 @@ class GithubAuthorInput extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.author.length > 0) {
+        if (nextProps.author != this.props.author) {
             this.setState({
-                userName: nextProps.author
+                userName: nextProps.author,
+                errorMessage: nextProps.errorMessage
             });
         }
     }
@@ -42,39 +43,34 @@ class GithubAuthorInput extends Component {
 
     render() {
         return (
-
-            <div className="row center-xs">
-                <div className="col-lg-2">
-                    <div className="box">
-                        <Avatar src={this.props.src} style={{margin: "1em 2em 0 0"}}/>
+            <div className="container">
+                <div className="row center-xs">
+                    <div className="col-lg-2">
+                        <div className="box">
+                            <Avatar src={this.props.src} style={{margin: "1em 2em 0 0"}}/>
+                        </div>
                     </div>
-                </div>
-                <div className="col-lg-4">
-                    <form onSubmit={this.onSubmitAuthor}>
-                        <TextField
-                            hintText="GitHub Author Name"
-                            ref={me => this.inputText = me}
-                            floatingLabelText="GitHub Author Name"
-                            value={this.state.userName}
-                            errorText={this.state.errorMessage}
-                            onChange={this.onInputChange}
+                    <div className="col-lg-4">
+                        <form onSubmit={this.onSubmitAuthor}>
+                            <TextField
+                                hintText="GitHub Author Name"
+                                ref={me => this.inputText = me}
+                                floatingLabelText="GitHub Author Name"
+                                value={this.state.userName}
+                                errorText={this.state.errorMessage}
+                                onChange={this.onInputChange}
+                            />
+                        </form>
+                    </div>
+                    <div className="col-lg-2"
+                         style={{display: "flex",flexDirection: "column", justifyContent: "center"}}>
+                        <FlatButton
+                            onClick={this.onSubmitAuthor}
+                            style={{marginLeft: "1em", marginTop: "1.5em"}}
+                            label="Get repos"
                         />
-                    </form>
-                </div>
-                <div className="col-lg-2"
-                     style={{display: "flex",flexDirection: "column", justifyContent: "center"}}>
-                    <FlatButton
-                        onClick={this.onSubmitAuthor}
-                        style={{marginLeft: "1em", marginTop: "1.5em"}}
-                        label="Get repos"
-                    />
-                </div>
-                <div className="col-lg-4">
-                    <RepoSwitcher repos={this.props.repos}
-                                  onChangeCurrentRepo={this.props.onChangeCurrentRepo}
-                                  currentRepo={this.props.currentRepo}
+                    </div>
 
-                    />
                 </div>
             </div>
         )

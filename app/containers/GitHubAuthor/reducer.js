@@ -10,7 +10,7 @@ const initialState = {
         id: "",
         avatarURL: defaultAvatar,
         repos: [],
-        error: ""
+        errorMessage: ""
     },
     currentRepoIndex: null,
     availableLabels: []
@@ -23,9 +23,9 @@ function githubAuthorReducer(state=initialState,action) {
                 githubAuthor: {
                     name: action.name,
                     id: action.id,
-                    avatarURL: action.name.length > 0 ? action.avatarURL : defaultAvatar,
+                    avatarURL: action.avatarURL.length > 0 ? action.avatarURL : defaultAvatar,
                     repos: action.repos,
-                    error: action.error
+                    errorMessage: action.errorMessage
                 },
                 currentRepoIndex: null
             };
