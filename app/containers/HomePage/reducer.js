@@ -21,6 +21,7 @@ function signInReducer (state=initialState, action){
     switch (action.type) {
         case "SIGN_IN":
             return {
+                ...state,
                 user: {
                     signed: action.signed,
                     login: action.login,
@@ -28,9 +29,11 @@ function signInReducer (state=initialState, action){
                     errorMessage: action.errorMessage
                 },
                 signInDialog: !action.signed
+
             };
         case "SIGN_OUT":
             return {
+                ...state,
                 user: {
                     signed: false,
                     login: "",
