@@ -119,9 +119,14 @@ function getRepoList(author, login, password){
     );
 }
 
+function fetchIssues(owner, repoName, options, login, password) {
+
+}
+
 export {
     getData,
     checkAuthorization,
     putData,
-    getRepoList
+    getRepoList,
+    fetchIssues
 }

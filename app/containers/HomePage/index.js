@@ -21,7 +21,7 @@ import IssuesTracker from 'containers/IssuesTracker';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { signIn, signOut, onSignInAction } from './actions';
-import { getSignedUser, getShowSignInDialog } from './selectors';
+import { getSignedUser, getShowSignInDialog, getLoadingWindowState } from './selectors';
 
 
 import RaisedButton from 'material-ui/RaisedButton';
@@ -31,6 +31,7 @@ import ActionInfo from 'material-ui/svg-icons/action/info';
 import FlatButton from 'material-ui/FlatButton';
 import ModalDialog from 'components/ModalDialog';
 import ModalSignIn from 'components/ModalSignIn';
+import ModalLoading from 'components/ModalLoading';
 
 
 
@@ -98,6 +99,10 @@ class HomePage extends Component { // eslint-disable-line react/prefer-stateless
                              onSignInSubmit={this.onSignInSubmit}
                              onSignInClose = {this.onSignInClose}
                 />
+                <ModalLoading  isOpen={this.props.loadingWindowState.isOpen}
+                               text={this.props.loadingWindowState.text}
+                />
+
                 <AppBar
                     title={<span className={styles.title}><FormattedMessage {...messages.title} /></span>}
                     iconElementLeft={<IconButton><ActionInfo /></IconButton>}
@@ -122,7 +127,8 @@ HomePage.propTypes = {
 
 const mapStateToProps = createStructuredSelector({
     user: getSignedUser(),
-    showSignInDialog: getShowSignInDialog()
+    showSignInDialog: getShowSignInDialog(),
+    loadingWindowState: getLoadingWindowState()
 });
 
 function mapDispatchToProps(dispatch) {
@@ -130,6 +136,7 @@ function mapDispatchToProps(dispatch) {
         onSignIn: (login, password) => dispatch(signIn(login, password)),
         onSignOut: () => dispatch(signOut()),
         onSignInAction: (isOpen) => dispatch(onSignInAction(isOpen)),
+        onChangeLoadingWindow: (isOpen, text) => dispatch(onChangeLoadingWindow(isOpen, text)),
         dispatch
     }
 };

@@ -10,6 +10,14 @@ export function onSignInAction(isOpen) {
     }
 }
 
+export function onChangeLoadingWindow(isOpen, text) {
+    return {
+        type: "ON_LOADING_WINDOW",
+        isOpen,
+        text
+    }
+}
+
 export function signIn(login, password) {
     return (dispatch, getState) => {
         checkAuthorization(login, password)

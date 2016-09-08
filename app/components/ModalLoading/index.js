@@ -12,8 +12,18 @@ export default class ModalLoading extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            open: this.props.isOpen,
+            open: false,
+            text: ""
         };
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.isOpen != this.state.isOpen) {
+            this.setState({
+                open: nextProps.isOpen,
+                text: nextProps.text
+            });
+        }
     }
 
     handleOpen = () => {
@@ -35,7 +45,7 @@ export default class ModalLoading extends React.Component {
                     modal={true}
                     open={this.state.open}
                 >
-                    <h4>{this.props.text}</h4>
+                    <h4>{this.state.text}</h4>
                     <LinearProgress mode="indeterminate"  />
                 </Dialog>
             </div>
