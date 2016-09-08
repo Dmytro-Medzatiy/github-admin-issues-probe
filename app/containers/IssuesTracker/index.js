@@ -8,7 +8,7 @@ import { createStructuredSelector } from 'reselect';
 import { changeIssuesList, changeCurrentIssue } from './actions';
 import { onChangeLoadingWindow } from 'containers/HomePage/actions';
 import { getRepoList, getCurrentRepoIndex } from 'containers/GitHubAuthor/selectors';
-import { getCurrentIssueIndex, getCurrentIssue } from './selectors';
+import { getCurrentIssueIndex, getCurrentIssue, getIssuesList } from './selectors';
 import { getSignedUser } from 'containers/HomePage/selectors';
 
 import RepoSwitcher from 'components/RepoSwitcher';
@@ -38,7 +38,7 @@ class IssuesTracker extends Component {
         if (nextProps.currentRepoIndex!=this.props.currentRepoIndex && nextProps.currentRepoIndex!=null) {
             this.props.showLoading(true, "Loading Issues, wait a moment...");
             this.setState({
-                loading:true,
+
                 issues: []
             });
             this.getIssues(1,nextProps.currentRepoIndex);
@@ -140,14 +140,7 @@ class IssuesTracker extends Component {
             /> :
             <h4 style={{padding:"15px", color: "#4b606b"}}>{message}</h4>);
 
-
-        const waiter = this.state.loading ?
-            (<div style={{textAlign:"center"}}>
-                <h4>Loading issues...</h4>
-                <CircularProgress color="#ff9800"/>
-
-            </div>) : null;
-        const issueContent = this.props.currentIssue != undefined ?
+        const issueContent = this.props.currentIssue != null ?
             <IssueContent currentRepo={repoList[currentRepoIndex]} /> : <h4 style={{margin:"2em"}}>Choose Issue</h4>;
 
         return (
