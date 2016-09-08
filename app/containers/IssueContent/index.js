@@ -11,6 +11,7 @@ import { getCommentsList } from './selectors';
 import { getSignedUser } from 'containers/HomePage/selectors';
 import { changeCommentsList } from './actions';
 import { onUpdateLabels } from 'containers/IssuesTracker/actions';
+import { onChangeLoadingWindow } from 'containers/HomePage/actions';
 
 import IssueLabels from 'components/IssueLabels';
 import styles from './styles.css';
@@ -34,7 +35,6 @@ class IssueContent extends Component {
         super(props);
         this.state = {
             showingComments: false,
-            loadingComments: false,
             showLabelsEditor: false,
             authorizationRequest: false
         };
@@ -95,9 +95,8 @@ class IssueContent extends Component {
 
         if (comments.length==0) {
             //fetch comments and place it in the state
-            this.setState({
-                loadingComments: true
-            });
+
+            this.props.showLoading(true, "Loading Comments, wait a moment...");
             const owner = currentRepo.owner;
             const repoName = currentRepo.repoName;
             const issueNumber = currentIssue.issueNumber;
@@ -117,9 +116,9 @@ class IssueContent extends Component {
                 response => {
                     this.props.onChangeComments(response);
                     this.setState({
-                        loadingComments: false,
                         showingComments: !this.state.showingComments
                     });
+                    this.props.showLoading(false, "");
                 }
             ).catch(
                 error => { throw new Error(error) }
@@ -187,9 +186,7 @@ class IssueContent extends Component {
 
             return (
                 <div>
-                    {this.state.loadingComments ? <ModalLoading  isOpen={true}
-                                  text="Loading Comments, wait a moment..."
-                    /> : null }
+
                     <LabelEditor labels={currentIssue.labels}
                                  defaultLabels={this.props.availableLabels}
                                  onSubmitNewLabels={this.onNewLabels}
@@ -239,6 +236,7 @@ function mapDispatchToProps(dispatch) {
     return {
         onChangeComments: (commentsList) => dispatch(changeCommentsList(commentsList)),
         onChangeLabels: (newLabels, issueNumber) => dispatch(onUpdateLabels(newLabels,issueNumber)),
+        showLoading: (isOpen, text) => dispatch(onChangeLoadingWindow(isOpen, text)),
         dispatch
     }
 }

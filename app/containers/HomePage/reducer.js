@@ -29,6 +29,7 @@ function signInReducer (state=initialState, action){
                     errorMessage: action.errorMessage
                 },
                 signInDialog: !action.signed
+
             };
         case "SIGN_OUT":
             return {
