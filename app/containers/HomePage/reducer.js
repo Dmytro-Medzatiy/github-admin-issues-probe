@@ -10,7 +10,11 @@ const initialState = {
         password: "",
         errorMessage: ""
     },
-    signInDialog: false
+    signInDialog: false,
+    loadingWindow: {
+        isOpen: false,
+        text: ""
+    }
 };
 
 function signInReducer (state=initialState, action){
@@ -38,6 +42,14 @@ function signInReducer (state=initialState, action){
             return {
                 ...state,
                 signInDialog: action.isOpen
+            };
+        case "ON_LOADING_WINDOW":
+            return {
+                ...state,
+                loadingWindow: {
+                    isOpen: action.isOpen,
+                    text: action.text
+                }
             };
         default:
             return state;

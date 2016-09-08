@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { changeIssuesList, changeCurrentIssue } from './actions';
+import { onChangeLoadingWindow } from 'containers/HomePage/actions';
 import { getRepoList, getCurrentRepoIndex } from 'containers/GitHubAuthor/selectors';
 import { getCurrentIssueIndex, getCurrentIssue } from './selectors';
 import { getSignedUser } from 'containers/HomePage/selectors';
@@ -16,7 +17,7 @@ import Paper from 'material-ui/Paper';
 import CircularProgress from 'material-ui/CircularProgress';
 import IssueList from 'components/IssueList';
 import IssueLabels from 'components/IssueLabels';
-import { getData } from 'api/restUtilities';
+import { getData, fetchIssues } from 'api/restUtilities';
 import IssueContent from 'containers/IssueContent';
 import ModalLoading from 'components/ModalLoading';
 
@@ -35,6 +36,7 @@ class IssuesTracker extends Component {
 
     componentWillReceiveProps(nextProps){
         if (nextProps.currentRepoIndex!=this.props.currentRepoIndex && nextProps.currentRepoIndex!=null) {
+            this.props.showLoading(true, "Loading Issues, wait a moment...");
             this.setState({
                 loading:true,
                 issues: []
@@ -72,6 +74,7 @@ class IssuesTracker extends Component {
         getData(fetchURL+issueIndex.toString(), login, password).then(
             response=> {
                 if (response.notFound) {
+                    this.props.showLoading(false,"");
                     this.setState({
                         loading: false
                     });
@@ -142,9 +145,7 @@ class IssuesTracker extends Component {
             (<div style={{textAlign:"center"}}>
                 <h4>Loading issues...</h4>
                 <CircularProgress color="#ff9800"/>
-                <ModalLoading  isOpen={true}
-                              text="Loading Issues, wait a moment..."
-                />
+
             </div>) : null;
         const issueContent = this.props.currentIssue != undefined ?
             <IssueContent currentRepo={repoList[currentRepoIndex]} /> : <h4 style={{margin:"2em"}}>Choose Issue</h4>;
@@ -158,7 +159,7 @@ class IssuesTracker extends Component {
                                 <div style={{textAlign: "left", backgroundColor: "#ff9800", color: "white"}}>
                                     <h4 style={{padding:"15px 0 15px 15px", margin:"0"}}>Issues</h4>
                                 </div>
-                                {waiter}
+
                                 {list}
                             </Paper>
                         </div>
@@ -195,6 +196,7 @@ function mapDispatchToProps(dispatch) {
     return {
         onChangeIssues: (issuesList) => dispatch(changeIssuesList(issuesList)),
         changeCurrentIssue: (issueIndex) => dispatch(changeCurrentIssue(issueIndex)),
+        showLoading: (isOpen, text) => dispatch(onChangeLoadingWindow(isOpen,text)),
         dispatch
     }
 };
