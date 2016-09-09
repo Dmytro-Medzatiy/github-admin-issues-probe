@@ -4,14 +4,21 @@
 
 const initialState = {
     issues: [],
-    currentIssueIndex: null
-
+    currentIssueIndex: null,
+    pagination: {
+        next: null,
+        prev: null,
+        first: null,
+        last: null,
+        perPage: 10
+    }
 };
 
 function issuesReducer(state=initialState, action) {
     switch (action.type) {
         case "CHANGE_ISSUES_LIST":
             return {
+                ...state,
                 issues: action.issuesList,
                 currentIssueIndex: null
             };
@@ -22,6 +29,7 @@ function issuesReducer(state=initialState, action) {
             };
         case "CHANGE_CURRENT_ISSUE_LABELS":
             return {
+                ...state,
                 issues: state.issues
                     .slice(0,action.issueIndex)
                     .concat(Object.assign({},state.issues[action.issueIndex],{labels:action.newLabels}))
