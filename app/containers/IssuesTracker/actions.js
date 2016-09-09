@@ -82,8 +82,67 @@ export function onGetIssues(owner, repoName, type, filter="all") {
         }
         fetchIssues(URL, login, password)
             .then(
-                response => console.log(response)
+                response => {
+                    //set pagination
+                    const links = response.links;
+                    let paginations = {
+                        next: null,
+                        first: null,
+                        last: null,
+                        prev: null,
+                        perPage: perPage
+                    };
+                    links.forEach((link)=> {
+                        paginations[link.rel]= link.link;
+                    });
+                    dispatch(setPagination(paginations));
+                    
+                    //set new issues
+
+
+                    //const issues = [];
+                    
+                    //for each object in jsonData!!!!
+
+                    const issues = response.jsonData.map((issueData)=> {
+                        const commentsURL = issueData.comments_url;
+                        const title = issueData.title;
+                        const user = {
+                            name: issueData.user.login,
+                            avatarURL: issueData.user.avatar_url
+                        };
+                        const labels = issueData.labels.map((label)=>{
+                            return {
+                                name: label.name,
+                                color: label.color
+                            }
+                        });
+                        const state = issueData.state;
+                        const comments = issueData.comments;
+                        const body = issueData.body;
+                        const issueNumber = issueData.number;
+
+                        return {
+                            title,
+                            commentsURL,
+                            user,
+                            labels,
+                            state,
+                            comments,
+                            body,
+                            issueNumber
+                        };
+                    });
+
+                    dispatch(changeIssuesList(issues));
+                }
             );
     }
+}
 
+export function setPagination(paginationState) {
+    return {
+        type: "SET_PAGINATION",
+        paginationState
+    }
 }

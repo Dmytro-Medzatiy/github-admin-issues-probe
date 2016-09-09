@@ -119,26 +119,7 @@ function getRepoList(author, login, password){
     );
 }
 
-function parse_link_header(header) {
-    if (header.length === 0) {
-        throw new Error("input must not be of zero length");
-    }
 
-    // Split parts by comma
-    var parts = header.split(',');
-    var params = {};
-    // Parse each part into a named link
-    for(var i=0; i<parts.length; i++) {
-        var section = parts[i].split(';');
-        if (section.length !== 2) {
-            throw new Error("section could not be split on ';'");
-        }
-        var url = section[0].replace(/<(.*)>/, '$1').trim();
-        var name = section[1].replace(/rel="(.*)"/, '$1').trim();
-        params[name] = url;
-    }
-    return params;
-}
 //owner, repoName, options, login, password
 function fetchIssues(URL, login, password) {
 
@@ -150,20 +131,22 @@ function fetchIssues(URL, login, password) {
     };
     return fetch(URL, options)
         .then(response => {
-            let params = response.headers.get("Link").split(',');
             let links = [];
-            for (let i = 0; i < params.length; i++) {
-                let link = params[i].split(';')[0];
-                link = link.substr(1, link.length - 2).trim();
-                let rel = params[i].split(';')[1];
-                rel = rel.split('\"')[1].trim();
-                links.push(
-                    {
-                        link: link,
-                        rel: rel
-                    });
-
-            }
+            
+            if (response.headers.get('Link')!=undefined) {
+                let params = response.headers.get("Link").split(',');
+                for (let i = 0; i < params.length; i++) {
+                    let link = params[i].split(';')[0].trim();
+                    link = link.substr(1, link.length - 2);
+                    let rel = params[i].split(';')[1].trim();
+                    rel = rel.split('\"')[1].trim();
+                    links.push(
+                        {
+                            link: link,
+                            rel: rel
+                        });
+                }
+            };             
             if (response.status >= 200 && response.status < 300) {
                 return response.text()
                     .then(responseText => {

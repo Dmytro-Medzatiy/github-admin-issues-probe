@@ -26,6 +26,18 @@ class IssuesPagination extends Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
+    componentWillReceiveProps(nextProps){
+        const { next, prev, first, last } = nextProps.pagination;
+        if (this.state.next!=next||this.state.first!=first||this.state.last!=last||this.state.prev!=prev ) {
+            this.setState({
+                next,
+                first,
+                last,
+                prev
+            });
+        }
+    }
+
     handleChange(event, index, value){
         this.setState({
             selectValue: value

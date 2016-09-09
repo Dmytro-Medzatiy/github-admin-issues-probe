@@ -36,6 +36,11 @@ function issuesReducer(state=initialState, action) {
                     .concat(state.issues.slice(action.issueIndex+1)),
                 currentIssueIndex: action.issueIndex
             };
+        case "SET_PAGINATION":
+            return {
+                ...state,
+                pagination: action.paginationState
+            };
         default: return state;
     }
 }

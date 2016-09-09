@@ -8,7 +8,7 @@ import { createStructuredSelector } from 'reselect';
 import { changeIssuesList, changeCurrentIssue, onGetIssues } from './actions';
 import { onChangeLoadingWindow } from 'containers/HomePage/actions';
 import { getRepoList, getCurrentRepoIndex } from 'containers/GitHubAuthor/selectors';
-import { getCurrentIssueIndex, getCurrentIssue, getPaginationState } from './selectors';
+import { getCurrentIssueIndex, getCurrentIssue, getPaginationState, getIssuesList } from './selectors';
 
 import { getSignedUser } from 'containers/HomePage/selectors';
 
@@ -44,14 +44,10 @@ class IssuesTracker extends Component {
 
     componentWillReceiveProps(nextProps){
         if (nextProps.currentRepoIndex!=this.props.currentRepoIndex && nextProps.currentRepoIndex!=null) {
-            //this.props.showLoading(true, "Loading Issues, wait a moment...");
-            this.setState({
-
-                issues: []
-            });
-            //this.getIssues(nextProps.currentRepoIndex,"initial");
+            this.props.showLoading(true, "Loading Issues, wait a moment...");
+            this.getIssues(nextProps.currentRepoIndex,"init");
         } else {
-            if (nextProps.currentRepoIndex==null) {
+            if (nextProps.currentRepoIndex==null&&nextProps.currentRepoIndex!=this.props.currentRepoIndex) {
                 this.setState({
                     issues: []
                 });
@@ -82,8 +78,8 @@ class IssuesTracker extends Component {
             "Choose Author and Repository first...":
             "There is no issues at this repo...";
 
-        const list =  ((this.state.issues.length > 0 ) ?
-            <IssueList issueList={this.state.issues}
+        const list =  ((this.props.issues.length > 0 ) ?
+            <IssueList issueList={this.props.issues}
                        onChangeCurrentIssue={this.onChangeCurrentIssue}
                        style={{height:"200px",overflow:"scrolling"}}
             /> :
@@ -139,7 +135,8 @@ const mapStateToProps = createStructuredSelector({
     currentIssueIndex: getCurrentIssueIndex(),
     currentIssue: getCurrentIssue(),
     signedUser: getSignedUser(),
-    pagination: getPaginationState()
+    pagination: getPaginationState(),
+    issues: getIssuesList()
     
 });
 
