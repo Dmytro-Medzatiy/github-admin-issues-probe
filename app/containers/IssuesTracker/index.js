@@ -5,21 +5,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { changeIssuesList, changeCurrentIssue } from './actions';
+import { changeIssuesList, changeCurrentIssue, onGetIssues } from './actions';
 import { onChangeLoadingWindow } from 'containers/HomePage/actions';
 import { getRepoList, getCurrentRepoIndex } from 'containers/GitHubAuthor/selectors';
-import { getCurrentIssueIndex, getCurrentIssue } from './selectors';
+import { getCurrentIssueIndex, getCurrentIssue, getPaginationState } from './selectors';
 import { getSignedUser } from 'containers/HomePage/selectors';
 
 import RepoSwitcher from 'components/RepoSwitcher';
 
 import Paper from 'material-ui/Paper';
-import CircularProgress from 'material-ui/CircularProgress';
+import Divider from 'material-ui/Divider';
+
 import IssueList from 'components/IssueList';
 import IssueLabels from 'components/IssueLabels';
 import { getData, fetchIssues } from 'api/restUtilities';
 import IssueContent from 'containers/IssueContent';
 import ModalLoading from 'components/ModalLoading';
+import IssuesPagination from 'components/IssuesPagination';
 
 import styles from './styles.css';
 
@@ -30,18 +32,22 @@ class IssuesTracker extends Component {
             loading: false,
             issues: []
         };
-        this.getIssues = this.getIssues.bind(this);
+        this.getNewIssues = this.getNewIssues.bind(this);
         this.onChangeCurrentIssue = this.onChangeCurrentIssue.bind(this);
+        this.onFetch = this.onFetch.bind(this);
+    }
+
+    onFetch() {
+        this.getNewIssues(8, "init");
     }
 
     componentWillReceiveProps(nextProps){
         if (nextProps.currentRepoIndex!=this.props.currentRepoIndex && nextProps.currentRepoIndex!=null) {
-            this.props.showLoading(true, "Loading Issues, wait a moment...");
+            //this.props.showLoading(true, "Loading Issues, wait a moment...");
             this.setState({
-                loading:true,
                 issues: []
             });
-            this.getIssues(1,nextProps.currentRepoIndex);
+            //this.getIssues(nextProps.currentRepoIndex,"initial");
         } else {
             if (nextProps.currentRepoIndex==null) {
                 this.setState({
@@ -56,78 +62,19 @@ class IssuesTracker extends Component {
         this.props.changeCurrentIssue(issueIndex);
     }
 
-    getIssues(issueIndex, repoIndex) {
+    getNewIssues(repoIndex, type) {
+
         const {repoList} = this.props;
         const currentRepo = repoList[repoIndex];
-
         const owner = currentRepo.owner;
         const repoName = currentRepo.repoName;
-        const fetchURL = "https://api.github.com/repos/" + owner + "/" + repoName + "/issues/";
-        const fetchOptions = {
-            "method": "GET",
-            "headers": {
-                "Authorization": "token "
-            }
-        };
-        const { login, password } = this.props.signedUser;
 
-        getData(fetchURL+issueIndex.toString(), login, password).then(
-            response=> {
-                if (response.notFound) {
-                    this.props.showLoading(false,"");
-                    this.setState({
-                        loading: false
-                    });
-                    this.props.onChangeIssues(this.state.issues);
-
-                } else {
-                    const commentsURL = response.comments_url;
-                    const title = response.title;
-                    const user = {
-                        name: response.user.login,
-                        avatarURL: response.user.avatar_url
-                    };
-                    const labels = response.labels.map((label)=>{
-                        return {
-                            name: label.name,
-                            color: label.color
-                        }
-                    });
-                    const state = response.state;
-                    const comments = response.comments;
-                    const body = response.body;
-                    const issueNumber = response.number;
-                    const closedBy = (response.closed_by!=null) ?
-                    {
-                        name: response.closed_by.login,
-                        avatarURL: response.closed_by.avatar_url
-                    } : null;
-                    const issue = {
-                        title,
-                        commentsURL,
-                        user,
-                        labels,
-                        state,
-                        comments,
-                        body,
-                        issueNumber,
-                        closedBy
-                    };
-
-                    this.setState({
-                        issues: this.state.issues.concat(issue)
-                    });
-                     this.getIssues(issueIndex+1,repoIndex);
-                }
-            }
-        ).catch(
-            error => { throw new Error(error) }
-        );
+        this.props.getIssues(owner, repoName, type);
 
     }
 
     render() {
-        const {currentRepoIndex, repoList} = this.props;
+        const {currentRepoIndex, repoList, pagination } = this.props;
 
         const message = currentRepoIndex == null ?
             "Choose Author and Repository first...":
@@ -141,12 +88,7 @@ class IssuesTracker extends Component {
             <h4 style={{padding:"15px", color: "#4b606b"}}>{message}</h4>);
 
 
-        const waiter = this.state.loading ?
-            (<div style={{textAlign:"center"}}>
-                <h4>Loading issues...</h4>
-                <CircularProgress color="#ff9800"/>
 
-            </div>) : null;
         const issueContent = this.props.currentIssue != undefined ?
             <IssueContent currentRepo={repoList[currentRepoIndex]} /> : <h4 style={{margin:"2em"}}>Choose Issue</h4>;
 
@@ -159,6 +101,13 @@ class IssuesTracker extends Component {
                                 <div style={{textAlign: "left", backgroundColor: "#ff9800", color: "white"}}>
                                     <h4 style={{padding:"15px 0 15px 15px", margin:"0"}}>Issues</h4>
                                 </div>
+                                <IssuesPagination pagination={pagination}
+
+                                />
+                                <Divider />
+                                <button onClick={this.onFetch} >
+                                    onFetch
+                                </button>
                                 {list}
 
                             </Paper>
@@ -190,7 +139,8 @@ const mapStateToProps = createStructuredSelector({
     currentRepoIndex: getCurrentRepoIndex(),
     currentIssueIndex: getCurrentIssueIndex(),
     currentIssue: getCurrentIssue(),
-    signedUser: getSignedUser()
+    signedUser: getSignedUser(),
+    pagination: getPaginationState()
     
 });
 
@@ -199,6 +149,7 @@ function mapDispatchToProps(dispatch) {
         onChangeIssues: (issuesList) => dispatch(changeIssuesList(issuesList)),
         changeCurrentIssue: (issueIndex) => dispatch(changeCurrentIssue(issueIndex)),
         showLoading: (isOpen, text) => dispatch(onChangeLoadingWindow(isOpen,text)),
+        getIssues: (owner, repoName, type) => dispatch(onGetIssues(owner, repoName, type)),
         dispatch
     }
 };

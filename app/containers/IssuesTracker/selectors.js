@@ -8,9 +8,12 @@ const getCurrentIssueIndex = () => state => state.get('issues').currentIssueInde
 
 const getCurrentIssue = () => state => state.get('issues').issues[state.get('issues').currentIssueIndex];
 
+const getPaginationState = () => state => state.get('issues').pagination;
+
 
 export {
     getIssuesList,
     getCurrentIssueIndex,
-    getCurrentIssue
+    getCurrentIssue,
+    getPaginationState
 }
