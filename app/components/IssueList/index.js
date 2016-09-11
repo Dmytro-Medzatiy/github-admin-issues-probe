@@ -22,6 +22,14 @@ class IssueList extends Component {
         this.onIssueClick = this.onIssueClick.bind(this);
     }
 
+    componentWillReceiveProps(nextProps){
+        if (nextProps.currentIssueIndex!=this.state.selected) {
+            this.setState({
+                selected: nextProps.currentIssueIndex
+            });
+        }
+    }
+
     onIssueClick(e){
         e.preventDefault();
         e.stopPropagation();
@@ -51,6 +59,7 @@ class IssueList extends Component {
                           style={this.state.selected == index ? {backgroundColor:"#adacac"}:{}}
                           onClick={this.onIssueClick}
                           secondaryText={issue.title}
+                          secondaryTextLines={2}
                 />
             )
         });

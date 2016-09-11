@@ -24,6 +24,7 @@ class IssuesPagination extends Component {
             last
         };
         this.handleChange = this.handleChange.bind(this);
+        this.handleNavigation = this.handleNavigation.bind(this);
     }
 
     componentWillReceiveProps(nextProps){
@@ -36,7 +37,7 @@ class IssuesPagination extends Component {
                 prev
             });
         };
-        this.handleNavigation = this.handleNavigation.bind(this);
+
     }
 
     handleNavigation(e){
@@ -47,6 +48,7 @@ class IssuesPagination extends Component {
         this.setState({
             selectValue: value
         });
+        this.props.handlePerPage(value);
 
     }
 

@@ -41,6 +41,14 @@ function issuesReducer(state=initialState, action) {
                 ...state,
                 pagination: action.paginationState
             };
+        case "CHANGE_PER_PAGE_VALUE":
+            return {
+                ...state,
+                pagination: {
+                    ...state.pagination,
+                    perPage: action.perPageValue
+                }
+            };
         default: return state;
     }
 }

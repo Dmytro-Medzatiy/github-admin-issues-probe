@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { changeIssuesList, changeCurrentIssue, onGetIssues } from './actions';
+import { changeIssuesList, changeCurrentIssue, onGetIssues, onChangePerPage } from './actions';
 import { onChangeLoadingWindow } from 'containers/HomePage/actions';
 import { getRepoList, getCurrentRepoIndex } from 'containers/GitHubAuthor/selectors';
 import { getCurrentIssueIndex, getCurrentIssue, getPaginationState, getIssuesList } from './selectors';
@@ -32,6 +32,7 @@ class IssuesTracker extends Component {
         this.getNewIssues = this.getNewIssues.bind(this);
         this.onChangeCurrentIssue = this.onChangeCurrentIssue.bind(this);
         this.handlePagination = this.handlePagination.bind(this);
+        this.handlePerPageProp = this.handlePerPageProp.bind(this);
     }
 
     componentWillReceiveProps(nextProps){
@@ -42,6 +43,11 @@ class IssuesTracker extends Component {
                 this.props.onChangeIssues([]);
             }
         }
+    }
+
+    handlePerPageProp(value){
+        this.props.changePerPageProp(value);
+        this.getNewIssues(this.props.currentRepoIndex, "init");
     }
 
     handlePagination(buttonId) {
@@ -64,21 +70,24 @@ class IssuesTracker extends Component {
     }
 
     render() {
-        const {currentRepoIndex, repoList, pagination } = this.props;
+        const {currentRepoIndex, repoList, pagination, currentIssue, issues, currentIssueIndex } = this.props;
 
         const message = currentRepoIndex == null ?
             "Choose Author and Repository first...":
-            "There is no issues at this repo...";
+            "There are no issues at this repo...";
 
         const list =  ((this.props.issues.length > 0 ) ?
             <IssueList issueList={this.props.issues}
                        onChangeCurrentIssue={this.onChangeCurrentIssue}
                        style={{height:"200px",overflow:"scrolling"}}
+                       currentIssueIndex={currentIssueIndex}
             /> :
             <h4 style={{padding:"15px", color: "#4b606b"}}>{message}</h4>);
 
-        const issueContent = this.props.currentIssue != null ?
+        const issueContent = currentIssue != null ?
             <IssueContent currentRepo={repoList[currentRepoIndex]} /> : <h4 style={{margin:"2em"}}>Choose Issue</h4>;
+
+        const currentIssueNumber = currentIssue!=null ? currentIssue.issueNumber : null;
 
         return (
             <div className="container" style={{marginTop:"0.5em"}}>
@@ -89,13 +98,13 @@ class IssuesTracker extends Component {
                                 <div style={{textAlign: "left", backgroundColor: "#ff9800", color: "white"}}>
                                     <h4 style={{padding:"15px 0 15px 15px", margin:"0"}}>Issues</h4>
                                 </div>
-
-                                <IssuesPagination pagination={pagination}
-                                                  handlePagination={this.handlePagination}
-                                />
+                                {issues.length < 10 ? <div></div>:
+                                    <IssuesPagination pagination={pagination}
+                                                      handlePagination={this.handlePagination}
+                                                      handlePerPage = {this.handlePerPageProp}
+                                    />}
                                 <Divider />
                                 {list}
-
                             </Paper>
                         </div>
                     </div>
@@ -104,7 +113,7 @@ class IssuesTracker extends Component {
                             <Paper style={this.props.currentIssueIndex!=null ? {display: "block"} : {display:"none"}}>
                                 <div style={{textAlign: "left", backgroundColor: "#ff9800", color: "white"}}>
                                     <h4 style={{padding:"15px 0 15px 15px", margin:"0"}}>
-                                        Issue #{this.props.currentIssueIndex+1}
+                                        Issue #{currentIssueNumber}
                                     </h4>
                                 </div>
                                 {issueContent}
@@ -135,6 +144,7 @@ function mapDispatchToProps(dispatch) {
         changeCurrentIssue: (issueIndex) => dispatch(changeCurrentIssue(issueIndex)),
         showLoading: (isOpen, text) => dispatch(onChangeLoadingWindow(isOpen,text)),
         getIssues: (owner, repoName, type) => dispatch(onGetIssues(owner, repoName, type)),
+        changePerPageProp: (value) => dispatch(onChangePerPage(value)),
         dispatch
     }
 };

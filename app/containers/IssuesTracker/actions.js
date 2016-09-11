@@ -6,6 +6,13 @@ import { putData, fetchIssues } from 'api/restUtilities';
 import { apiError } from 'containers/HomePage/actions';
 import { onChangeLoadingWindow } from 'containers/HomePage/actions';
 
+export function onChangePerPage(perPageValue) {
+    return {
+        type: "CHANGE_PER_PAGE_VALUE",
+        perPageValue
+    }
+}
+
 export function changeIssuesList(issuesList) {
     return {
         type: "CHANGE_ISSUES_LIST",
