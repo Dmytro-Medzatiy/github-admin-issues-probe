@@ -29,31 +29,23 @@ import styles from './styles.css';
 class IssuesTracker extends Component {
     constructor(props){
         super(props);
-        this.state = {
-            loading: false,
-            issues: []
-        };
         this.getNewIssues = this.getNewIssues.bind(this);
         this.onChangeCurrentIssue = this.onChangeCurrentIssue.bind(this);
-        this.onFetch = this.onFetch.bind(this);
-    }
-
-    onFetch() {
-        this.getNewIssues(8, "init");
+        this.handlePagination = this.handlePagination.bind(this);
     }
 
     componentWillReceiveProps(nextProps){
         if (nextProps.currentRepoIndex!=this.props.currentRepoIndex && nextProps.currentRepoIndex!=null) {
-            this.props.showLoading(true, "Loading Issues, wait a moment...");
-            this.getIssues(nextProps.currentRepoIndex,"init");
+            this.getNewIssues(nextProps.currentRepoIndex,"init");
         } else {
             if (nextProps.currentRepoIndex==null&&nextProps.currentRepoIndex!=this.props.currentRepoIndex) {
-                this.setState({
-                    issues: []
-                });
                 this.props.onChangeIssues([]);
             }
         }
+    }
+
+    handlePagination(buttonId) {
+        this.getNewIssues(this.props.currentRepoIndex, buttonId.toString());
     }
 
     onChangeCurrentIssue(issueIndex){
@@ -85,7 +77,7 @@ class IssuesTracker extends Component {
             /> :
             <h4 style={{padding:"15px", color: "#4b606b"}}>{message}</h4>);
 
-        const issueContent = this.props.currentIssue != undefined ?
+        const issueContent = this.props.currentIssue != null ?
             <IssueContent currentRepo={repoList[currentRepoIndex]} /> : <h4 style={{margin:"2em"}}>Choose Issue</h4>;
 
         return (
@@ -99,12 +91,9 @@ class IssuesTracker extends Component {
                                 </div>
 
                                 <IssuesPagination pagination={pagination}
-
+                                                  handlePagination={this.handlePagination}
                                 />
                                 <Divider />
-                                <button onClick={this.onFetch} >
-                                    onFetch
-                                </button>
                                 {list}
 
                             </Paper>

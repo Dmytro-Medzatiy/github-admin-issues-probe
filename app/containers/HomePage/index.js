@@ -113,7 +113,6 @@ class HomePage extends Component { // eslint-disable-line react/prefer-stateless
                         <FlatButton label="Sign In" onTouchTap={this.onSignInAction} />}
 
                 />
-
                 <GitHubAuthor />
                 <IssuesTracker />
             </div>

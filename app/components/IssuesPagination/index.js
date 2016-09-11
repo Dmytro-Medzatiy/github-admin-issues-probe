@@ -35,7 +35,12 @@ class IssuesPagination extends Component {
                 last,
                 prev
             });
-        }
+        };
+        this.handleNavigation = this.handleNavigation.bind(this);
+    }
+
+    handleNavigation(e){
+        this.props.handlePagination(e.currentTarget.dataset.id);
     }
 
     handleChange(event, index, value){
@@ -54,6 +59,8 @@ class IssuesPagination extends Component {
                            touch={true}
                            tooltipPosition="top-center"
                            disabled={first==null? true: false}
+                           data-id="first"
+                           onClick={this.handleNavigation}
                >
                    <NavigationFirstPage hoverColor="#ff9800" />
                </IconButton>
@@ -61,6 +68,8 @@ class IssuesPagination extends Component {
                            touch={true}
                            tooltipPosition="top-center"
                            disabled={prev==null? true: false}
+                           data-id="prev"
+                           onClick={this.handleNavigation}
 
                >
                    <NavigationChevronLeft hoverColor="#ff9800" />
@@ -82,6 +91,8 @@ class IssuesPagination extends Component {
                            touch={true}
                            tooltipPosition="top-center"
                            disabled={next==null? true: false}
+                           data-id="next"
+                           onClick={this.handleNavigation}
                >
                    <NavigationChevronRight hoverColor="#ff9800" />
                </IconButton>
@@ -89,6 +100,8 @@ class IssuesPagination extends Component {
                            touch={true}
                            tooltipPosition="top-center"
                            disabled={last==null? true: false}
+                           data-id="last"
+                           onClick={this.handleNavigation}
                >
                    <NavigationLastPage hoverColor="#ff9800" />
                </IconButton>

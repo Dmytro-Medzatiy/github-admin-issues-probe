@@ -36,8 +36,9 @@ class IssueList extends Component {
     render() {
 
         const listItems = this.props.issueList.map((issue,index)=> {
+            const issueTitle = "Issue #"+ issue.issueNumber;
             return (
-                <ListItem primaryText={issue.title}
+                <ListItem primaryText={issueTitle}
                           rightIcon={ issue.state=="open" ?
                             <ActionInfo color="green"
                                 title="Open"
@@ -49,6 +50,7 @@ class IssueList extends Component {
                           data-index={index}
                           style={this.state.selected == index ? {backgroundColor:"#adacac"}:{}}
                           onClick={this.onIssueClick}
+                          secondaryText={issue.title}
                 />
             )
         });

@@ -4,6 +4,7 @@
 
 import { putData, fetchIssues } from 'api/restUtilities';
 import { apiError } from 'containers/HomePage/actions';
+import { onChangeLoadingWindow } from 'containers/HomePage/actions';
 
 export function changeIssuesList(issuesList) {
     return {
@@ -55,27 +56,28 @@ export function onUpdateLabels (newLabels, issueNumber) {
 
 export function onGetIssues(owner, repoName, type, filter="all") {
     return (dispatch, getState) => {
+        dispatch(onChangeLoadingWindow(true,"Loading Issues, wait a moment..."));
         const login = getState().get('globals').user.login;
         const password = getState().get('globals').user.password;
         const pagination = getState().get('issues').pagination;
         const perPage = pagination.perPage;
-        const initialParameters = "?state=" + filter + "&per_page=" + perPage + "&page=1";
+        const initialParameters = "?state=" + filter + "&direction=asc&per_page=" + perPage + "&page=1";
         let URL = "";
         switch (type) {
             case "init":
                 URL = "https://api.github.com/repos/" + owner + "/" + repoName + "/issues" + initialParameters;
                 break;
             case "next":
-                URL = pagination.next.link;
+                URL = pagination.next;
                 break;
             case "prev":
-                URL = pagination.prev.link;
+                URL = pagination.prev;
                 break;
             case "last":
-                URL = pagination.last.link;
+                URL = pagination.last;
                 break;
             case "first":
-                URL = pagination.first.link;
+                URL = pagination.first;
                 break;
             default:
                 URL = undefined;
@@ -98,11 +100,6 @@ export function onGetIssues(owner, repoName, type, filter="all") {
                     dispatch(setPagination(paginations));
                     
                     //set new issues
-
-
-                    //const issues = [];
-                    
-                    //for each object in jsonData!!!!
 
                     const issues = response.jsonData.map((issueData)=> {
                         const commentsURL = issueData.comments_url;
@@ -135,6 +132,7 @@ export function onGetIssues(owner, repoName, type, filter="all") {
                     });
 
                     dispatch(changeIssuesList(issues));
+                    dispatch(onChangeLoadingWindow(false,""));
                 }
             );
     }
