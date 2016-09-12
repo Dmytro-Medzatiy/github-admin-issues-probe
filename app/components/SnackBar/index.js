@@ -10,7 +10,6 @@ export default class SnackBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            autoHideDuration: 5000,
             open: false,
         };
     }

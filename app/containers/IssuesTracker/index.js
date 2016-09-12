@@ -2,32 +2,25 @@
  * Created by DMedzatiy on 30-Aug-16.
  */
 
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-import { changeIssuesList, changeCurrentIssue, onGetIssues, onChangePerPage } from './actions';
-import { onChangeLoadingWindow } from 'containers/HomePage/actions';
-import { getRepoList, getCurrentRepoIndex } from 'containers/GitHubAuthor/selectors';
-import { getCurrentIssueIndex, getCurrentIssue, getPaginationState, getIssuesList } from './selectors';
-
-import { getSignedUser } from 'containers/HomePage/selectors';
-
-import RepoSwitcher from 'components/RepoSwitcher';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {createStructuredSelector} from 'reselect';
+import {changeIssuesList, changeCurrentIssue, onGetIssues, onChangePerPage} from './actions';
+import {onChangeLoadingWindow} from 'containers/HomePage/actions';
+import {getRepoList, getCurrentRepoIndex} from 'containers/GitHubAuthor/selectors';
+import {getCurrentIssueIndex, getCurrentIssue, getPaginationState, getIssuesList} from './selectors';
+import {getSignedUser} from 'containers/HomePage/selectors';
 
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 
 import IssueList from 'components/IssueList';
-import IssueLabels from 'components/IssueLabels';
-import { getData, fetchIssues } from 'api/restUtilities';
+import {getData, fetchIssues} from 'api/restUtilities';
 import IssueContent from 'containers/IssueContent';
-import ModalLoading from 'components/ModalLoading';
 import IssuesPagination from 'components/IssuesPagination';
 
-import styles from './styles.css';
-
 class IssuesTracker extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.getNewIssues = this.getNewIssues.bind(this);
         this.onChangeCurrentIssue = this.onChangeCurrentIssue.bind(this);
@@ -35,17 +28,17 @@ class IssuesTracker extends Component {
         this.handlePerPageProp = this.handlePerPageProp.bind(this);
     }
 
-    componentWillReceiveProps(nextProps){
-        if (nextProps.currentRepoIndex!=this.props.currentRepoIndex && nextProps.currentRepoIndex!=null) {
-            this.getNewIssues(nextProps.currentRepoIndex,"init");
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.currentRepoIndex != this.props.currentRepoIndex && nextProps.currentRepoIndex != null) {
+            this.getNewIssues(nextProps.currentRepoIndex, "init");
         } else {
-            if (nextProps.currentRepoIndex==null&&nextProps.currentRepoIndex!=this.props.currentRepoIndex) {
+            if (nextProps.currentRepoIndex == null && nextProps.currentRepoIndex != this.props.currentRepoIndex) {
                 this.props.onChangeIssues([]);
             }
         }
     }
 
-    handlePerPageProp(value){
+    handlePerPageProp(value) {
         this.props.changePerPageProp(value);
         this.getNewIssues(this.props.currentRepoIndex, "init");
     }
@@ -54,7 +47,7 @@ class IssuesTracker extends Component {
         this.getNewIssues(this.props.currentRepoIndex, buttonId.toString());
     }
 
-    onChangeCurrentIssue(issueIndex){
+    onChangeCurrentIssue(issueIndex) {
         this.props.changeCurrentIssue(issueIndex);
     }
 
@@ -70,13 +63,13 @@ class IssuesTracker extends Component {
     }
 
     render() {
-        const {currentRepoIndex, repoList, pagination, currentIssue, issues, currentIssueIndex } = this.props;
+        const {currentRepoIndex, repoList, pagination, currentIssue, issues, currentIssueIndex} = this.props;
 
         const message = currentRepoIndex == null ?
-            "Choose Author and Repository first...":
+            "Choose Author and Repository first..." :
             "There are no issues at this repo...";
 
-        const list =  ((this.props.issues.length > 0 ) ?
+        const list = ((this.props.issues.length > 0 ) ?
             <IssueList issueList={this.props.issues}
                        onChangeCurrentIssue={this.onChangeCurrentIssue}
                        style={{height:"200px",overflow:"scrolling"}}
@@ -85,23 +78,23 @@ class IssuesTracker extends Component {
             <h4 style={{padding:"15px", color: "#4b606b"}}>{message}</h4>);
 
         const issueContent = currentIssue != null ?
-            <IssueContent currentRepo={repoList[currentRepoIndex]} /> : <h4 style={{margin:"2em"}}>Choose Issue</h4>;
+            <IssueContent currentRepo={repoList[currentRepoIndex]}/> : <h4 style={{margin:"2em"}}>Choose Issue</h4>;
 
-        const currentIssueNumber = currentIssue!=null ? currentIssue.issueNumber : null;
+        const currentIssueNumber = currentIssue != null ? currentIssue.issueNumber : null;
 
         return (
             <div className="container" style={{marginTop:"0.5em"}}>
                 <div className="row">
                     <div className="col-xs">
-                        <div className="box" >
+                        <div className="box">
                             <Paper >
                                 <div style={{textAlign: "left", backgroundColor: "#ff9800", color: "white"}}>
                                     <h4 style={{padding:"15px 0 15px 15px", margin:"0"}}>Issues</h4>
                                 </div>
-                                {issues.length < 10 ? <div></div>:
+                                {issues.length < 10 ? <div></div> :
                                     <IssuesPagination pagination={pagination}
                                                       handlePagination={this.handlePagination}
-                                                      handlePerPage = {this.handlePerPageProp}
+                                                      handlePerPage={this.handlePerPageProp}
                                     />}
                                 <Divider />
                                 {list}
@@ -135,14 +128,14 @@ const mapStateToProps = createStructuredSelector({
     signedUser: getSignedUser(),
     pagination: getPaginationState(),
     issues: getIssuesList()
-    
+
 });
 
 function mapDispatchToProps(dispatch) {
     return {
         onChangeIssues: (issuesList) => dispatch(changeIssuesList(issuesList)),
         changeCurrentIssue: (issueIndex) => dispatch(changeCurrentIssue(issueIndex)),
-        showLoading: (isOpen, text) => dispatch(onChangeLoadingWindow(isOpen,text)),
+        showLoading: (isOpen, text) => dispatch(onChangeLoadingWindow(isOpen, text)),
         getIssues: (owner, repoName, type) => dispatch(onGetIssues(owner, repoName, type)),
         changePerPageProp: (value) => dispatch(onChangePerPage(value)),
         dispatch

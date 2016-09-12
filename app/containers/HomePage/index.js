@@ -9,8 +9,8 @@
  * the linting exception.
  */
 
-import React, { Component, PropTypes} from 'react';
-import { FormattedMessage } from 'react-intl';
+import React, {Component, PropTypes} from 'react';
+import {FormattedMessage} from 'react-intl';
 import messages from './messages';
 import styles from './styles.css';
 
@@ -18,15 +18,21 @@ import GitHubAuthor from 'containers/GitHubAuthor';
 import Footer from 'components/Footer';
 import IssuesTracker from 'containers/IssuesTracker';
 
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-import { signIn, signOut, onSignInAction, 
-    onChangeLoadingWindow, onChangeAuthorizationWindow, 
-    changeHelpWindowVisibility } from './actions';
-import { getSignedUser, getShowSignInDialog, getLoadingWindowState, getAuthorizationRequest, getHelpWindowVisibility } from './selectors';
+import {connect} from 'react-redux';
+import {createStructuredSelector} from 'reselect';
+import {
+    signIn, signOut, onSignInAction,
+    onChangeLoadingWindow, onChangeAuthorizationWindow,
+    changeHelpWindowVisibility
+} from './actions';
+import {
+    getSignedUser,
+    getShowSignInDialog,
+    getLoadingWindowState,
+    getAuthorizationRequest,
+    getHelpWindowVisibility
+} from './selectors';
 
-
-import RaisedButton from 'material-ui/RaisedButton';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import ActionInfo from 'material-ui/svg-icons/action/info';
@@ -36,9 +42,8 @@ import ModalSignIn from 'components/ModalSignIn';
 import ModalLoading from 'components/ModalLoading';
 
 
-
 class HomePage extends Component { // eslint-disable-line react/prefer-stateless-function
-    constructor(props){
+    constructor(props) {
         super(props);
         this.onSignInAction = this.onSignInAction.bind(this);
         this.onSignInSubmit = this.onSignInSubmit.bind(this);
@@ -48,16 +53,16 @@ class HomePage extends Component { // eslint-disable-line react/prefer-stateless
         this.handleHelpWindowClose = this.handleHelpWindowClose.bind(this);
 
     }
-    
+
     handleHelpWindowClose() {
         this.props.helpWindowVisibility(false);
     }
 
     onAuthorizationRequestClose() {
-        this.props.changeAuthorizationRequest(false,"");
+        this.props.changeAuthorizationRequest(false, "");
     }
 
-    onSignInAction(){
+    onSignInAction() {
         this.props.onSignInAction(true);
     }
 
@@ -78,14 +83,16 @@ class HomePage extends Component { // eslint-disable-line react/prefer-stateless
             <div>
                 <h4>General Info </h4>
                 <p>This tool was created in learning purpose. The main aim of this tool is to show
-                information about GitHub user repositories, existing issues, issue comments and
-                labels</p>
+                    information about GitHub user repositories, existing issues, issue comments and
+                    labels</p>
                 <h4>Security issue</h4>
                 <p>For managing issue labels you have to Sign In with your GitHub login and password. Take into account
-                    that this tool does not have any additional security modules - your password will be transferred thru the
-                    standard HTTP request in base64 encoding. This tool does not store any passwords or other user information.</p>
+                    that this tool does not have any additional security modules - your password will be transferred
+                    thru the
+                    standard HTTP request in base64 encoding. This tool does not store any passwords or other user
+                    information.</p>
                 <p>Without authorization you still can view information about any existing GitHub user, repos and issues
-                but you will be limited by 60 request per hour</p>
+                    but you will be limited by 60 request per hour</p>
                 <h4>Main workflow</h4>
                 <ul>
                     <li>Sign In or use tool without signing in</li>
@@ -97,7 +104,7 @@ class HomePage extends Component { // eslint-disable-line react/prefer-stateless
                 </ul>
             </div>;
 
-        const { user, showHelpWindow } = this.props;
+        const {user, showHelpWindow} = this.props;
 
         return (
             <div style={{padding: '20px'}}>
@@ -117,12 +124,11 @@ class HomePage extends Component { // eslint-disable-line react/prefer-stateless
                 <ModalSignIn isOpen={this.props.showSignInDialog}
                              errorMessage={user.errorMessage}
                              onSignInSubmit={this.onSignInSubmit}
-                             onSignInClose = {this.onSignInClose}
+                             onSignInClose={this.onSignInClose}
                 />
-                <ModalLoading  isOpen={this.props.loadingWindowState.isOpen}
-                               text={this.props.loadingWindowState.text}
+                <ModalLoading isOpen={this.props.loadingWindowState.isOpen}
+                              text={this.props.loadingWindowState.text}
                 />
-
                 <AppBar
                     title={<span className={styles.title}><FormattedMessage {...messages.title} /></span>}
                     iconElementLeft={<IconButton><ActionInfo /></IconButton>}
@@ -131,17 +137,21 @@ class HomePage extends Component { // eslint-disable-line react/prefer-stateless
                         this.props.user.signed ?
                         <FlatButton label="Sign Out" onTouchTap={this.onSignOut}/>:
                         <FlatButton label="Sign In" onTouchTap={this.onSignInAction} />}
-
                 />
                 <GitHubAuthor />
                 <IssuesTracker />
+                <Footer />
             </div>
         );
     }
 }
 
 HomePage.propTypes = {
-    user: PropTypes.object
+    user: PropTypes.object,
+    showSignInDialog: PropTypes.bool,
+    loadingWindowState: PropTypes.bool,
+    authorizationRequest: PropTypes.object,
+    showHelpWindow: PropTypes.bool
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -158,10 +168,10 @@ function mapDispatchToProps(dispatch) {
         onSignOut: () => dispatch(signOut()),
         onSignInAction: (isOpen) => dispatch(onSignInAction(isOpen)),
         onChangeLoadingWindow: (isOpen, text) => dispatch(onChangeLoadingWindow(isOpen, text)),
-        changeAuthorizationRequest: (isOpen, text) => dispatch(onChangeAuthorizationWindow(isOpen,text)),
+        changeAuthorizationRequest: (isOpen, text) => dispatch(onChangeAuthorizationWindow(isOpen, text)),
         helpWindowVisibility: (visibility) => dispatch(changeHelpWindowVisibility(visibility)),
         dispatch
     }
 };
 
-export default connect(mapStateToProps,mapDispatchToProps)(HomePage);
+export default connect(mapStateToProps, mapDispatchToProps)(HomePage);

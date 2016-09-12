@@ -2,12 +2,12 @@
  * Created by D.Medzatiy on 29.08.2016.
  */
 
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { changeGitHubAuthor, changeCurrentRepo } from './actions';
-import { getGitHubAuthor, getRepoList, getCurrentRepoIndex } from './selectors';
-import { getSignedUser } from 'containers/HomePage/selectors';
-import { createStructuredSelector } from 'reselect';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {changeGitHubAuthor, changeCurrentRepo} from './actions';
+import {getGitHubAuthor, getRepoList, getCurrentRepoIndex} from './selectors';
+import {getSignedUser} from 'containers/HomePage/selectors';
+import {createStructuredSelector} from 'reselect';
 
 import Paper from 'material-ui/Paper';
 
@@ -24,8 +24,8 @@ class GitHubAuthor extends Component {
     componentWillReceiveProps(nextProps) {
         //Get repos of Signed User if currentGitHubAuthor is empty or NotFound
         if (nextProps.signedUser.login != this.props.signedUser.login &&
-            nextProps.signedUser.login.length>0 && this.props.githubAuthor.id.length == 0 ) {
-                this.props.onChangeGitHubAuthor(nextProps.signedUser.login);
+            nextProps.signedUser.login.length > 0 && this.props.githubAuthor.id.length == 0) {
+            this.props.onChangeGitHubAuthor(nextProps.signedUser.login);
         }
     }
 
@@ -37,9 +37,9 @@ class GitHubAuthor extends Component {
         this.props.onChangeGitHubAuthor(userName);
     }
 
-    render(){
-        const { githubAuthor, repoList, currentRepoIndex } = this.props;
-        return(
+    render() {
+        const {githubAuthor, repoList, currentRepoIndex} = this.props;
+        return (
             <Paper style={{width: '100%', minWidth:'360px',padding: '0 10px 10px 0', textAlign:"center"}} zDepth={1}>
                 <div className="container-fluid">
                     <div className="row center-xs">
@@ -70,7 +70,7 @@ const mapStateToProps = createStructuredSelector({
     signedUser: getSignedUser()
 });
 
-function mapDispatchToProps(dispatch){
+function mapDispatchToProps(dispatch) {
     return {
         onChangeGitHubAuthor: (authorName) => dispatch(changeGitHubAuthor(authorName)),
         onChangeRepo: (index) => dispatch(changeCurrentRepo(index)),

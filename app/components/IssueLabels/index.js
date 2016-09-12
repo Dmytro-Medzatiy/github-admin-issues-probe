@@ -2,21 +2,19 @@
  * Created by Admin on 01.09.2016.
  */
 
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Chip from 'material-ui/Chip';
-import FlatButton from 'material-ui/FlatButton';
 import ActionNoteAdd from 'material-ui/svg-icons/action/note-add';
 import IconButton from 'material-ui/IconButton';
 
-import { getContrastYIQ } from 'api/colorIssues';
+import {getContrastYIQ} from 'api/colorIssues';
 
 class IssueLabels extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.styles = {
             chip: {
                 margin: 4,
-
             },
             wrapper: {
                 display: 'flex',
@@ -24,19 +22,20 @@ class IssueLabels extends Component {
             },
         };
     }
+
     render() {
-        const labels = this.props.labels!=undefined && this.props.labels.length >0 ? this.props.labels.map((label,index) => {
-            const color = "#"+label.color;
+        const labels = this.props.labels != undefined && this.props.labels.length > 0 ? this.props.labels.map((label, index) => {
+            const color = "#" + label.color;
             const labelTextColor = getContrastYIQ(label.color);
             return (<Chip key={index}
                           style={this.styles.chip}
-                          backgroundColor= {color}
-                          labelColor = {labelTextColor}
+                          backgroundColor={color}
+                          labelColor={labelTextColor}
             >
                 {label.name}
             </Chip>)
 
-        }): <div></div>;
+        }) : <div></div>;
         return (
             <div>
                 <div style={this.styles.wrapper}>

@@ -2,7 +2,7 @@
  * Created by Admin on 30.08.2016.
  */
 
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
@@ -16,10 +16,8 @@ class RepoSwitcher extends Component {
         this.state = {
             repo: null,
             index: null,
-
         };
         this.handleOnRepoChange = this.handleOnRepoChange.bind(this);
-
     }
 
     componentWillReceiveProps(nextProps) {

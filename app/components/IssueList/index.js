@@ -2,19 +2,13 @@
  * Created by Admin on 31.08.2016.
  */
 
-import React, { Component, PropTypes } from 'react';
-import Paper from 'material-ui/Paper';
+import React, {Component, PropTypes} from 'react';
 import {List, ListItem} from 'material-ui/List';
-import ContentInbox from 'material-ui/svg-icons/content/inbox';
-import ActionGrade from 'material-ui/svg-icons/action/grade';
-import ContentSend from 'material-ui/svg-icons/content/send';
-import ContentDrafts from 'material-ui/svg-icons/content/drafts';
-import Divider from 'material-ui/Divider';
 import ActionInfo from 'material-ui/svg-icons/action/info';
 import NotificationDoNotDisturb from 'material-ui/svg-icons/notification/do-not-disturb';
 
 class IssueList extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             selected: null
@@ -22,15 +16,15 @@ class IssueList extends Component {
         this.onIssueClick = this.onIssueClick.bind(this);
     }
 
-    componentWillReceiveProps(nextProps){
-        if (nextProps.currentIssueIndex!=this.state.selected) {
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.currentIssueIndex != this.state.selected) {
             this.setState({
                 selected: nextProps.currentIssueIndex
             });
         }
     }
 
-    onIssueClick(e){
+    onIssueClick(e) {
         e.preventDefault();
         e.stopPropagation();
         const issueIndex = Number(e.currentTarget.dataset.index);
@@ -43,8 +37,8 @@ class IssueList extends Component {
 
     render() {
 
-        const listItems = this.props.issueList.map((issue,index)=> {
-            const issueTitle = "Issue #"+ issue.issueNumber;
+        const listItems = this.props.issueList.map((issue, index)=> {
+            const issueTitle = "Issue #" + issue.issueNumber;
             return (
                 <ListItem primaryText={issueTitle}
                           rightIcon={ issue.state=="open" ?

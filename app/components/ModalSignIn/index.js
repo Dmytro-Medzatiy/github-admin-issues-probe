@@ -4,25 +4,17 @@
 
 import React from 'react';
 import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import { checkAuthorization } from 'api/restUtilities';
+import {checkAuthorization} from 'api/restUtilities';
 
-
-/**
- * Dialog with action buttons. The actions are passed in as an array of React objects,
- * in this example [FlatButtons](/#/components/flat-button).
- *
- * You can also close this dialog by clicking outside the dialog, or with the 'Esc' key.
- */
 export default class ModalSignIn extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             open: false,
             errorMessage: "",
-            login:"",
+            login: "",
             password: ""
         };
         this.onChangeLoginField = this.onChangeLoginField.bind(this);
@@ -35,12 +27,12 @@ export default class ModalSignIn extends React.Component {
         e.stopPropagation();
         e.preventDefault();
 
-        const { login, password } = this.state;
+        const {login, password} = this.state;
 
         this.props.onSignInSubmit(login, password);
     }
 
-    onChangeLoginField(){
+    onChangeLoginField() {
         const inputValue = this.inputLogin.input.value;
         this.setState({
             login: inputValue
@@ -55,17 +47,17 @@ export default class ModalSignIn extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.isOpen==true) {
+        if (nextProps.isOpen == true) {
             this.setState({
-                open:true
+                open: true
             });
         } else {
             this.setState({
-                open:false
+                open: false
             });
         }
 
-        if (nextProps.errorMessage!= this.state.errorMessage) {
+        if (nextProps.errorMessage != this.state.errorMessage) {
             this.setState({
                 errorMessage: nextProps.errorMessage
             });
@@ -79,21 +71,16 @@ export default class ModalSignIn extends React.Component {
 
     handleClose = () => {
         this.props.onSignInClose();
-        //this.setState({open: false});
     };
 
     render() {
-
-
         return (
             <div>
-
                 <Dialog
                     title="Enter GitHub Login and Password"
-
                     actionsContainerStyle={{textAlign: "center"}}
                     modal={false}
-                    open= {this.state.open}
+                    open={this.state.open}
                     onRequestClose={this.handleClose}
                     titleStyle={{backgroundColor: "#00bcd4", color: "white"}}
                 >
@@ -101,14 +88,14 @@ export default class ModalSignIn extends React.Component {
                           style={{textAlign:"center"}}
                     >
                         <div>
-                        <TextField
-                            hintText="GitHub Login"
-                        ref={me => this.inputLogin = me}
-                        floatingLabelText="GitHub Login"
-                        errorText={this.state.errorMessage}
-                        value={this.state.login}
-                        onChange={this.onChangeLoginField}
-                        />
+                            <TextField
+                                hintText="GitHub Login"
+                                ref={me => this.inputLogin = me}
+                                floatingLabelText="GitHub Login"
+                                errorText={this.state.errorMessage}
+                                value={this.state.login}
+                                onChange={this.onChangeLoginField}
+                            />
                         </div>
                         <TextField
                             hintText="Password"
@@ -126,12 +113,12 @@ export default class ModalSignIn extends React.Component {
                                 onTouchTap={this.handleClose}
                                 style={{marginRight:"1em"}}
                             />
-                        <RaisedButton
-                            label="Submit"
-                            secondary={true}
-                            type="Submit"
-                        />
-                            </div>
+                            <RaisedButton
+                                label="Submit"
+                                secondary={true}
+                                type="Submit"
+                            />
+                        </div>
                     </form>
                 </Dialog>
             </div>

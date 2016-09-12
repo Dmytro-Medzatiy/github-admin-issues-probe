@@ -4,21 +4,19 @@
 
 import React from 'react';
 import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import {List, ListItem} from 'material-ui/List';
 import Checkbox from 'material-ui/Checkbox';
 import Chip from 'material-ui/Chip';
 
-import { getContrastYIQ } from 'api/colorIssues';
+import {getContrastYIQ} from 'api/colorIssues';
 
 export default class LabelEditor extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             open: false,
-            checked: [ ]
+            checked: []
         };
         this.onCheck = this.onCheck.bind(this);
         this.onLabelsSubmit = this.onLabelsSubmit.bind(this);
@@ -27,8 +25,8 @@ export default class LabelEditor extends React.Component {
     onLabelsSubmit(e) {
         e.stopPropagation();
         e.preventDefault();
-        const { checked } = this.state;
-        const newLabels = this.props.defaultLabels.filter((label,index)=>{
+        const {checked} = this.state;
+        const newLabels = this.props.defaultLabels.filter((label, index)=> {
             if (checked[index]) {
                 return label
             }
@@ -37,12 +35,12 @@ export default class LabelEditor extends React.Component {
         this.handleClose();
     }
 
-    onCheck(e){
+    onCheck(e) {
         const checkBoxIndex = Number(e.currentTarget.value);
         const newValue = Boolean(e.currentTarget.checked);
-        const { checked } = this.state;
-        const newChecked = checked.map((value,index)=>{
-            if (index==checkBoxIndex) {
+        const {checked} = this.state;
+        const newChecked = checked.map((value, index)=> {
+            if (index == checkBoxIndex) {
                 return newValue
             } else {
                 return value
@@ -51,14 +49,13 @@ export default class LabelEditor extends React.Component {
         this.setState({
             checked: newChecked
         });
-
     }
 
     componentWillReceiveProps(nextProps) {
-        const { defaultLabels, labels } = nextProps;
+        const {defaultLabels, labels} = nextProps;
         if (nextProps.isOpen) {
-            const checked = defaultLabels.map((label)=>{
-                if (labels.find((x)=>x.name==label.name)!=undefined)  {
+            const checked = defaultLabels.map((label)=> {
+                if (labels.find((x)=>x.name == label.name) != undefined) {
                     return (
                         true
                     )
@@ -107,16 +104,13 @@ export default class LabelEditor extends React.Component {
                         {label.name}
                     </Chip></ListItem>
             )
-
         });
 
 
         return (
             <div>
-
                 <Dialog
                     title="Available Labels"
-
                     modal={false}
                     open={this.state.open}
                     onRequestClose={this.handleClose}
@@ -140,7 +134,6 @@ export default class LabelEditor extends React.Component {
                             />
                         </div>
                     </form>
-
                 </Dialog>
             </div>
         );

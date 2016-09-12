@@ -2,7 +2,7 @@
  * Created by DMedzatiy on 05-Sep-16.
  */
 
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 
