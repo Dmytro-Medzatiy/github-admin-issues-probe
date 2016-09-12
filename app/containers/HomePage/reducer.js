@@ -16,13 +16,19 @@ const initialState = {
         text: ""
     },
     authorizationRequest: {
-        showing: false,
+        open: false,
         text: ""
-    }
+    },
+    helpWindowVisibility: true
 };
 
 function signInReducer (state=initialState, action){
     switch (action.type) {
+        case "CHANGE_HELP_PAGE_VISIBILITY":
+            return {
+                ...state,
+                helpWindowVisibility: action.visibility
+            };
         case "SIGN_IN":
             return {
                 ...state,

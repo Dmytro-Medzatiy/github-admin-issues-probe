@@ -96,7 +96,11 @@ function putData(URL,login, password, data ){
                     throw new Error(response.statusText);
                 }
             }
-        });
+        }).catch(
+            error => {
+                throw new Error(error)
+            }
+        );
 };
 
 function getRepoList(author, login, password){
@@ -184,7 +188,11 @@ function fetchIssues(URL, login, password) {
                     throw new Error(response.statusText);
                 }
             }
-        });
+        }).catch(
+            error => {
+                throw new Error(error)
+            }
+        );
 }
 
 export {

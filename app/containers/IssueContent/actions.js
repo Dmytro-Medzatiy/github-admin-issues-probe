@@ -13,6 +13,13 @@ export function changeCommentsList(commentsList) {
     }
 }
 
+export function onChangeSnackbarVisibility(flag) {
+    return {
+        type: "CHANGE_SNACKBAR_VISIBILITY",
+        flag
+    }
+}
+
 export function changeCommentsVisibility(flag) {
     return {
         type: "CHANGE_COMMENTS_VISIBILITY",

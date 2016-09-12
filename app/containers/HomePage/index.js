@@ -20,8 +20,10 @@ import IssuesTracker from 'containers/IssuesTracker';
 
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { signIn, signOut, onSignInAction, onChangeLoadingWindow, onChangeAuthorizationWindow } from './actions';
-import { getSignedUser, getShowSignInDialog, getLoadingWindowState, getAuthorizationRequest } from './selectors';
+import { signIn, signOut, onSignInAction, 
+    onChangeLoadingWindow, onChangeAuthorizationWindow, 
+    changeHelpWindowVisibility } from './actions';
+import { getSignedUser, getShowSignInDialog, getLoadingWindowState, getAuthorizationRequest, getHelpWindowVisibility } from './selectors';
 
 
 import RaisedButton from 'material-ui/RaisedButton';
@@ -43,7 +45,12 @@ class HomePage extends Component { // eslint-disable-line react/prefer-stateless
         this.onSignOut = this.onSignOut.bind(this);
         this.onSignInClose = this.onSignInClose.bind(this);
         this.onAuthorizationRequestClose = this.onAuthorizationRequestClose.bind(this);
+        this.handleHelpWindowClose = this.handleHelpWindowClose.bind(this);
 
+    }
+    
+    handleHelpWindowClose() {
+        this.props.helpWindowVisibility(false);
     }
 
     onAuthorizationRequestClose() {
@@ -90,20 +97,21 @@ class HomePage extends Component { // eslint-disable-line react/prefer-stateless
                 </ul>
             </div>;
 
-        const { user } = this.props;
+        const { user, showHelpWindow } = this.props;
 
         return (
             <div style={{padding: '20px'}}>
                 <ModalDialog title="GitHub Issue Admin Tool"
                              closeButtonText="Let's start!"
                              content={modalContent}
-                             isOpen={true}
+                             onClose={this.handleHelpWindowClose}
+                             isOpen={showHelpWindow}
 
                 />
                 <ModalDialog title="Authorization needed"
                              closeButtonText="OK"
                              content={this.props.authorizationRequest.text}
-                             isOpen={this.props.authorizationRequest.showing}
+                             isOpen={this.props.authorizationRequest.open}
                              onClose={this.onAuthorizationRequestClose}
                 />
                 <ModalSignIn isOpen={this.props.showSignInDialog}
@@ -140,7 +148,8 @@ const mapStateToProps = createStructuredSelector({
     user: getSignedUser(),
     showSignInDialog: getShowSignInDialog(),
     loadingWindowState: getLoadingWindowState(),
-    authorizationRequest: getAuthorizationRequest()
+    authorizationRequest: getAuthorizationRequest(),
+    showHelpWindow: getHelpWindowVisibility()
 });
 
 function mapDispatchToProps(dispatch) {
@@ -150,6 +159,7 @@ function mapDispatchToProps(dispatch) {
         onSignInAction: (isOpen) => dispatch(onSignInAction(isOpen)),
         onChangeLoadingWindow: (isOpen, text) => dispatch(onChangeLoadingWindow(isOpen, text)),
         changeAuthorizationRequest: (isOpen, text) => dispatch(onChangeAuthorizationWindow(isOpen,text)),
+        helpWindowVisibility: (visibility) => dispatch(changeHelpWindowVisibility(visibility)),
         dispatch
     }
 };

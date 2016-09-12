@@ -6,10 +6,10 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { getCurrentIssue } from 'containers/IssuesTracker/selectors';
-import { getAvailableLabels } from 'containers/GitHubAuthor/selectors';
-import { getCommentsList, getShowLabelsEditor, getShowComments } from './selectors';
+import { getAvailableLabels, getGitHubAuthor } from 'containers/GitHubAuthor/selectors';
+import { getCommentsList, getShowLabelsEditor, getShowComments, getSnackBarVisibility } from './selectors';
 import { getSignedUser } from 'containers/HomePage/selectors';
-import { changeCommentsList, getComments, changeShowingLabelsEditor, changeCommentsVisibility } from './actions';
+import { changeCommentsList, getComments, changeShowingLabelsEditor, changeCommentsVisibility, onChangeSnackbarVisibility } from './actions';
 import { onUpdateLabels } from 'containers/IssuesTracker/actions';
 import { onChangeLoadingWindow, onChangeAuthorizationWindow } from 'containers/HomePage/actions';
 
@@ -23,7 +23,7 @@ import  IconButton from 'material-ui/IconButton';
 import Divider from 'material-ui/Divider';
 import Toggle from 'material-ui/Toggle';
 import { getData, putData } from 'api/restUtilities';
-import ModalLoading from 'components/ModalLoading';
+import SnackBar from 'components/SnackBar';
 import LabelEditor from 'components/LabelEditor';
 
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
@@ -37,26 +37,33 @@ class IssueContent extends Component {
         this.onEditLabels = this.onEditLabels.bind(this);
         this.onNewLabels = this.onNewLabels.bind(this);
         this.onCloseLabelsEditor = this.onCloseLabelsEditor.bind(this);
+        this.hideSnackbar = this.hideSnackbar.bind(this);
 
     }
 
     onCloseLabelsEditor() {
         this.props.onShowLabelsEditor(false);
     }
+    
+    hideSnackbar() {
+        this.props.showSnackBar(false);
+    }
 
     onNewLabels(newLabels){
-
+        this.props.showSnackBar(true);
         //push to state and post through the async action
         this.props.onChangeLabels(newLabels, this.props.currentIssue.issueNumber);
+        
+
     }
 
     onEditLabels(){
-        const { signedUser, currentIssue } = this.props;
-        if (signedUser.signed && signedUser.login.toUpperCase() == currentIssue.user.name.toUpperCase()) {
+        const { signedUser, currentIssue, currentRepo } = this.props;
+        if (signedUser.signed && signedUser.login.toUpperCase() == currentRepo.owner.toUpperCase()) {
             this.props.onShowLabelsEditor(true);
         } else {
-            if (!signedUser) {
-                this.props.showAuthorizationRequest(true,"You have to Sign In first");
+            if (!signedUser.signed) {
+                this.props.showAuthorizationRequest(true,"To change existing labels you have to Sign Up first");
             } else {
                 this.props.showAuthorizationRequest(true,"You don't have rights to edit this Issue Labels!");
             }
@@ -140,7 +147,11 @@ class IssueContent extends Component {
 
             return (
                 <div>
-
+                    <SnackBar isOpen={this.props.snackBarVisibility}
+                              message="Labels are updated. New data will be accessible in a minute..."
+                              autoHideDuration={6000}
+                              onClose={this.hideSnackbar}
+                    />
                     <LabelEditor labels={currentIssue.labels}
                                  defaultLabels={this.props.availableLabels}
                                  onSubmitNewLabels={this.onNewLabels}
@@ -186,6 +197,8 @@ const mapStateToProps = createStructuredSelector({
     availableLabels: getAvailableLabels(),
     showLabelsEditor: getShowLabelsEditor(),
     showingComments: getShowComments(),
+    snackBarVisibility: getSnackBarVisibility(),
+
 
 });
 
@@ -198,6 +211,7 @@ function mapDispatchToProps(dispatch) {
         onShowLabelsEditor: (flag) => dispatch(changeShowingLabelsEditor(flag)),
         commentsVisibility: (flag) => dispatch(changeCommentsVisibility(flag)),
         showAuthorizationRequest: (isOpen, text) => dispatch(onChangeAuthorizationWindow(isOpen, text)),
+        showSnackBar: (flag) => dispatch(onChangeSnackbarVisibility(flag)),
         dispatch
     }
 }

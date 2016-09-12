@@ -6,6 +6,7 @@ const initialState = {
     comments: [],
     showingComments: false,
     showLabelsEditor: false,
+    snackBarVisibility: false
 
 };
 
@@ -25,6 +26,11 @@ function commentsReducer(state=initialState, action) {
             return {
                 ...state,
                 showingComments: action.flag
+            };
+        case "CHANGE_SNACKBAR_VISIBILITY":
+            return {
+                ...state,
+                snackBarVisibility: action.flag
             };
         default: return state;
     }

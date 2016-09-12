@@ -10,9 +10,12 @@ const getLoadingWindowState = () => state => state.get('globals').loadingWindow;
 
 const getAuthorizationRequest = () => state => state.get('globals').authorizationRequest;
 
+const getHelpWindowVisibility = () => state => state.get('globals').helpWindowVisibility;
+
 export {
     getSignedUser,
     getShowSignInDialog,
     getLoadingWindowState,
-    getAuthorizationRequest
+    getAuthorizationRequest,
+    getHelpWindowVisibility
 }

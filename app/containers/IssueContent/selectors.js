@@ -8,9 +8,12 @@ const getShowLabelsEditor = () => state => state.get('comments').showLabelsEdito
 
 const getShowComments = () => state => state.get('comments').showingComments;
 
+const getSnackBarVisibility = () => state => state.get('comments').snackBarVisibility;
+
 
 export {
     getCommentsList,
     getShowLabelsEditor,
-    getShowComments
+    getShowComments,
+    getSnackBarVisibility
 }

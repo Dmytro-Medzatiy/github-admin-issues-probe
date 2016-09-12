@@ -3,6 +3,13 @@
  */
 import { checkAuthorization } from 'api/restUtilities';
 
+export function changeHelpWindowVisibility(visibility) {
+    return {
+        type: "CHANGE_HELP_PAGE_VISIBILITY",
+        visibility
+    }
+}
+
 export function onSignInAction(isOpen) {
     return {
         type: "ON_SIGN_IN_ACTION",

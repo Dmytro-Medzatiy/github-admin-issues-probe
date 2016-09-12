@@ -6,6 +6,7 @@ import { putData, fetchIssues } from 'api/restUtilities';
 import { apiError } from 'containers/HomePage/actions';
 import { onChangeLoadingWindow } from 'containers/HomePage/actions';
 
+
 export function onChangePerPage(perPageValue) {
     return {
         type: "CHANGE_PER_PAGE_VALUE",
@@ -52,7 +53,8 @@ export function onUpdateLabels (newLabels, issueNumber) {
         putData(URL, login, password, data).then(
             res=> {
                 if (res==200) {
-                    dispatch(changeCurrentIssueLabels(newLabels, (issueNumber-1)))
+                    dispatch(changeCurrentIssueLabels(newLabels, (issueNumber-1)));
+                    
                 } else {
                     dispatch(apiError("Bad response from GitHub, try to repeat your actions later"))
                 }
