@@ -1,22 +1,42 @@
 # github-admin-issues-probe
-***For learning purposes only***
+### Quick start
 
-This repo is a seed project for creating a simple issues administration app for a specified GH repository.
-UI should be made with Material UI components. Please find a Material UI component usage in `HomePage` component.
- 
-#### The problem:
+1. Clone this repo using `git clone --depth=1 https://github.com/dmytro-medzatiy/github-admin-issues-probe.git`
+2. Change dir 
+3. Run `npm install` to install dependencies
+4. Run `npm run start` and open in browser `http://localhost:3000`
 
-* Ask user about what GH repository issues he wants to administer. (User should enter login and password in order to have the access to entered repo).
-* Check if the user is an owner of entered repository, if not - throw/show an error.
-* Load all issues of the repository. List of the issue names should occupy only 40% of the entire page. The rest is reserved for issue's text.
-* Clicking on an issue's name in the list user can read the text of the issue.
-* User should have the ability to review, change and add any label on the selected issue.
+### General Info
 
-The resolution of this task may seem to be very simple. 
-But taking in account the missing of any REST/AJAX methods or utilities, it is rather complex thing to implement and organise API calls properly and integrate them into UI architecture.
+This tool was created in learning purpose. The main aim of this tool is to show information about GitHub user repositories, existing issues, issue comments and labels
 
-#### Getting started:
+### Features
 
-* Create a fork of this repo.
-* Implement AJAX calls to the GH REST interface. https://developer.github.com/v3/
-* Implement all items in the section `Problem` using a Material UI components (the library is already included into the source code).
+-*GitHub Authorization* - with Basic Authentication 
+
+-*Input of GitHub author and loading repositories list* - then you can choose any repo from the list and tool will loading Issues of choosen repo
+
+-*Issues list* - supported GitHub Pagination. If number of Issues more than 10, pagination component will appear and gives opportunity to switch number of issues per page and use standard pagination mechanism
+
+-*Issue content* - Shows Issue text, comments and labels
+
+-*Labels editor* - if you are signed and have rights to change available labels of issue - you can do it by clicking on the Icon
+
+### Security issue
+
+For managing issue labels you have to Sign In with your GitHub login and password. Take into account that this tool does not have any additional security modules - your password will be transferred through the standard HTTP request in base64 encoding. This tool does not store any passwords or other user information.
+
+Without authorization you still can view information about any existing GitHub user, repos and issues but you will be limited by 60 request per hour
+
+### Main workflow
+
+<ul>
+<li>Sign In or use tool without signing in</li>
+<li>Enter GitHub user name and click on "GET INFO" or push "Enter" button</li>
+<li>Choose user repository from the given list</li>
+<li>If repo has issues, choose one from the list</li>
+<li>You can show/hide comments</li>
+<li>You can manage labels if you are signed and you are the owner/admin of this repo</li>
+</ul>
+
+
