@@ -14,6 +14,10 @@ const initialState = {
     loadingWindow: {
         isOpen: false,
         text: ""
+    },
+    authorizationRequest: {
+        showing: false,
+        text: ""
     }
 };
 
@@ -51,6 +55,14 @@ function signInReducer (state=initialState, action){
                 ...state,
                 loadingWindow: {
                     isOpen: action.isOpen,
+                    text: action.text
+                }
+            };
+        case "ON_AUTHORIZATION_WINDOW":
+            return {
+                ...state,
+                authorizationRequest: {
+                    open: action.isOpen,
                     text: action.text
                 }
             };

@@ -20,8 +20,8 @@ import IssuesTracker from 'containers/IssuesTracker';
 
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { signIn, signOut, onSignInAction } from './actions';
-import { getSignedUser, getShowSignInDialog, getLoadingWindowState } from './selectors';
+import { signIn, signOut, onSignInAction, onChangeLoadingWindow, onChangeAuthorizationWindow } from './actions';
+import { getSignedUser, getShowSignInDialog, getLoadingWindowState, getAuthorizationRequest } from './selectors';
 
 
 import RaisedButton from 'material-ui/RaisedButton';
@@ -42,7 +42,12 @@ class HomePage extends Component { // eslint-disable-line react/prefer-stateless
         this.onSignInSubmit = this.onSignInSubmit.bind(this);
         this.onSignOut = this.onSignOut.bind(this);
         this.onSignInClose = this.onSignInClose.bind(this);
+        this.onAuthorizationRequestClose = this.onAuthorizationRequestClose.bind(this);
 
+    }
+
+    onAuthorizationRequestClose() {
+        this.props.changeAuthorizationRequest(false,"");
     }
 
     onSignInAction(){
@@ -92,7 +97,14 @@ class HomePage extends Component { // eslint-disable-line react/prefer-stateless
                 <ModalDialog title="GitHub Issue Admin Tool"
                              closeButtonText="Let's start!"
                              content={modalContent}
+                             isOpen={true}
 
+                />
+                <ModalDialog title="Authorization needed"
+                             closeButtonText="OK"
+                             content={this.props.authorizationRequest.text}
+                             isOpen={this.props.authorizationRequest.showing}
+                             onClose={this.onAuthorizationRequestClose}
                 />
                 <ModalSignIn isOpen={this.props.showSignInDialog}
                              errorMessage={user.errorMessage}
@@ -127,7 +139,8 @@ HomePage.propTypes = {
 const mapStateToProps = createStructuredSelector({
     user: getSignedUser(),
     showSignInDialog: getShowSignInDialog(),
-    loadingWindowState: getLoadingWindowState()
+    loadingWindowState: getLoadingWindowState(),
+    authorizationRequest: getAuthorizationRequest()
 });
 
 function mapDispatchToProps(dispatch) {
@@ -136,6 +149,7 @@ function mapDispatchToProps(dispatch) {
         onSignOut: () => dispatch(signOut()),
         onSignInAction: (isOpen) => dispatch(onSignInAction(isOpen)),
         onChangeLoadingWindow: (isOpen, text) => dispatch(onChangeLoadingWindow(isOpen, text)),
+        changeAuthorizationRequest: (isOpen, text) => dispatch(onChangeAuthorizationWindow(isOpen,text)),
         dispatch
     }
 };

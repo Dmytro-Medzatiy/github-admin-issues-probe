@@ -82,6 +82,7 @@ export default class LabelEditor extends React.Component {
     };
 
     handleClose = () => {
+        this.props.onCloseEditor();
         this.setState({open: false});
     };
 

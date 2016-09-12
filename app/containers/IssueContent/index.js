@@ -7,11 +7,11 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { getCurrentIssue } from 'containers/IssuesTracker/selectors';
 import { getAvailableLabels } from 'containers/GitHubAuthor/selectors';
-import { getCommentsList } from './selectors';
+import { getCommentsList, getShowLabelsEditor, getShowComments } from './selectors';
 import { getSignedUser } from 'containers/HomePage/selectors';
-import { changeCommentsList } from './actions';
+import { changeCommentsList, getComments, changeShowingLabelsEditor, changeCommentsVisibility } from './actions';
 import { onUpdateLabels } from 'containers/IssuesTracker/actions';
-import { onChangeLoadingWindow } from 'containers/HomePage/actions';
+import { onChangeLoadingWindow, onChangeAuthorizationWindow } from 'containers/HomePage/actions';
 
 import IssueLabels from 'components/IssueLabels';
 import styles from './styles.css';
@@ -33,42 +33,32 @@ const marked = require('marked');
 class IssueContent extends Component {
     constructor(props){
         super(props);
-        this.state = {
-            showingComments: false,
-            showLabelsEditor: false,
-            authorizationRequest: false
-        };
         this.onShowComments = this.onShowComments.bind(this);
         this.onEditLabels = this.onEditLabels.bind(this);
         this.onNewLabels = this.onNewLabels.bind(this);
+        this.onCloseLabelsEditor = this.onCloseLabelsEditor.bind(this);
 
+    }
+
+    onCloseLabelsEditor() {
+        this.props.onShowLabelsEditor(false);
     }
 
     onNewLabels(newLabels){
 
-        this.setState({
-            showLabelsEditor: false
-        });
         //push to state and post through the async action
         this.props.onChangeLabels(newLabels, this.props.currentIssue.issueNumber);
-
     }
 
     onEditLabels(){
         const { signedUser, currentIssue } = this.props;
         if (signedUser.signed && signedUser.login.toUpperCase() == currentIssue.user.name.toUpperCase()) {
-            this.setState({
-                showLabelsEditor: true
-            });
+            this.props.onShowLabelsEditor(true);
         } else {
             if (!signedUser) {
-                this.setState({
-                    authorizationRequest: "You have to Sign In first"
-                });
+                this.props.showAuthorizationRequest(true,"You have to Sign In first");
             } else {
-                this.setState({
-                    authorizationRequest: "You don't have rights to edit this Issue Labels!"
-                });
+                this.props.showAuthorizationRequest(true,"You don't have rights to edit this Issue Labels!");
             }
 
         }
@@ -80,11 +70,8 @@ class IssueContent extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.currentIssue.issueNumber!=this.props.currentIssue.issueNumber) {
-            this.setState({
-                showingComments: false,
-                showLabelsEditor: false
-            });
+        if (nextProps.currentIssue!=undefined && nextProps.currentIssue.issueNumber!=this.props.currentIssue.issueNumber) {
+            this.props.commentsVisibility(false);
             this.props.onChangeComments([]);
         }
     }
@@ -92,54 +79,24 @@ class IssueContent extends Component {
     onShowComments (){
         const { currentRepo, comments, currentIssue } = this.props;
 
-
         if (comments.length==0) {
             //fetch comments and place it in the state
 
-            this.props.showLoading(true, "Loading Comments, wait a moment...");
             const owner = currentRepo.owner;
             const repoName = currentRepo.repoName;
             const issueNumber = currentIssue.issueNumber;
-            const URL = "https://api.github.com/repos/" + owner + "/" + repoName + "/issues/"+issueNumber+"/comments";
-            const { login, password } = this.props.signedUser;
-            getData(URL, login, password).then(
-                response=> {
-                    return response.map((comment) => {
-                        return {
-                            user: comment.user.login,
-                            body: comment.body,
-                            avatarURL: comment.user.avatar_url
-                        }
-                    });
-                }
-            ).then(
-                response => {
-                    this.props.onChangeComments(response);
-                    this.setState({
-                        showingComments: !this.state.showingComments
-                    });
-                    this.props.showLoading(false, "");
-                }
-            ).catch(
-                error => { throw new Error(error) }
-            );
-
+            this.props.getComments(owner, repoName, issueNumber);
+            this.props.commentsVisibility(!this.props.showingComments);
         } else {
-            this.setState({
-                showingComments: !this.state.showingComments
-            });
+            this.props.commentsVisibility(!this.props.showingComments);
         }
-
     }
 
     render() {
         const commentStyle = {
             fontStile: '1.5rem',
             lineHeight: '1.5rem'};
-        const {currentIssue, comments} = this.props;
-
-        const { showingComments } = this.state;
-
+        const {currentIssue, comments, showingComments} = this.props;
 
         if (currentIssue!= undefined) {
             let showCommentsButton = "";
@@ -176,13 +133,10 @@ class IssueContent extends Component {
 
                             </div>
                         )
-
                 });
             } else {
                 commentsContent = "";
             }
-
-
 
             return (
                 <div>
@@ -190,7 +144,8 @@ class IssueContent extends Component {
                     <LabelEditor labels={currentIssue.labels}
                                  defaultLabels={this.props.availableLabels}
                                  onSubmitNewLabels={this.onNewLabels}
-                                 isOpen={this.state.showLabelsEditor} />
+                                 onCloseEditor={this.onCloseLabelsEditor}
+                                 isOpen={this.props.showLabelsEditor} />
 
                     <div className="row">
                         {showCommentsButton}
@@ -228,7 +183,9 @@ const mapStateToProps = createStructuredSelector({
     currentIssue: getCurrentIssue(),
     comments: getCommentsList(),
     signedUser: getSignedUser(),
-    availableLabels: getAvailableLabels()
+    availableLabels: getAvailableLabels(),
+    showLabelsEditor: getShowLabelsEditor(),
+    showingComments: getShowComments(),
 
 });
 
@@ -237,6 +194,10 @@ function mapDispatchToProps(dispatch) {
         onChangeComments: (commentsList) => dispatch(changeCommentsList(commentsList)),
         onChangeLabels: (newLabels, issueNumber) => dispatch(onUpdateLabels(newLabels,issueNumber)),
         showLoading: (isOpen, text) => dispatch(onChangeLoadingWindow(isOpen, text)),
+        getComments: (owner, repoName, issueNumber) => dispatch(getComments(owner, repoName, issueNumber)),
+        onShowLabelsEditor: (flag) => dispatch(changeShowingLabelsEditor(flag)),
+        commentsVisibility: (flag) => dispatch(changeCommentsVisibility(flag)),
+        showAuthorizationRequest: (isOpen, text) => dispatch(onChangeAuthorizationWindow(isOpen, text)),
         dispatch
     }
 }

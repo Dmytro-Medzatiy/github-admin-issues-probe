@@ -32,13 +32,7 @@ export default class ModalDialog extends React.Component {
                 label="Cancel"
                 primary={true}
                 onTouchTap={this.handleClose}
-            />,
-            <FlatButton
-                label="Submit"
-                primary={true}
-                keyboardFocused={true}
-                onTouchTap={this.handleClose}
-            />,
+            />
         ];
 
         return (

@@ -10,6 +10,14 @@ export function onSignInAction(isOpen) {
     }
 }
 
+export function onChangeAuthorizationWindow(isOpen, text) {
+    return {
+        type: "ON_AUTHORIZATION_WINDOW",
+        isOpen,
+        text
+    }
+}
+
 export function onChangeLoadingWindow(isOpen, text) {
     return {
         type: "ON_LOADING_WINDOW",

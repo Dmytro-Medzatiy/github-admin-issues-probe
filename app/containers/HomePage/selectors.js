@@ -8,8 +8,11 @@ const getShowSignInDialog = () => state => state.get('globals').signInDialog;
 
 const getLoadingWindowState = () => state => state.get('globals').loadingWindow;
 
+const getAuthorizationRequest = () => state => state.get('globals').authorizationRequest;
+
 export {
     getSignedUser,
     getShowSignInDialog,
-    getLoadingWindowState
+    getLoadingWindowState,
+    getAuthorizationRequest
 }

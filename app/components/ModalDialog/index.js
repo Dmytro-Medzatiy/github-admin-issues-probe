@@ -17,12 +17,22 @@ export default class ModalDialog extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            open: true,
+            open: this.props.isOpen,
+
         };
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.isOpen != this.state.open) {
+            this.setState({
+                open: nextProps.isOpen,
+            });
+        }
     }
 
     handleClose = () => {
         this.setState({open: false});
+        this.props.onClose();
     };
 
     render() {
@@ -34,7 +44,7 @@ export default class ModalDialog extends React.Component {
             />
         ];
 
-        const { title, content } = this.props
+        const { title, content } = this.props;
 
         return (
             <div>
@@ -48,7 +58,7 @@ export default class ModalDialog extends React.Component {
                     autoScrollBodyContent={true}
                     actionsContainerStyle={{textAlign:"center"}}
                 >
-                    {this.props.content}
+                    {content}
                 </Dialog>
             </div>
         );

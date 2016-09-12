@@ -18,7 +18,7 @@ export default class ModalLoading extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.isOpen != this.state.isOpen) {
+        if (nextProps.isOpen != this.state.open) {
             this.setState({
                 open: nextProps.isOpen,
                 text: nextProps.text
