@@ -1,4 +1,7 @@
 # github-admin-issues-probe
+
+<img src="https://github.com/dmytro-medzatiy/github-admin-issues-probe/blob/master/screenShotGithubAdmin.png" style="width: 100%;"></img>
+
 ### Quick start
 
 1. Clone this repo using `git clone --depth=1 https://github.com/dmytro-medzatiy/github-admin-issues-probe.git`
