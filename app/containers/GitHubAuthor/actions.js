@@ -72,7 +72,7 @@ export function changeCurrentRepo(repoIndex){
         const login = signedUser.login;
         const password = signedUser.password;
 
-        const URL = 'https://api.github.com/repos/ipselon/bootstrap-prepack/labels';
+        const URL = "https://api.github.com/repos/"+author+"/"+repoName+"/labels";
 
         //get Available Labels for new current repo
         getData(URL, login, password).then(

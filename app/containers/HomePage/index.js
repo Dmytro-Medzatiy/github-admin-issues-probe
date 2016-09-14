@@ -88,7 +88,7 @@ class HomePage extends Component { // eslint-disable-line react/prefer-stateless
                 <h4>Security issue</h4>
                 <p>For managing issue labels you have to Sign In with your GitHub login and password. Take into account
                     that this tool does not have any additional security modules - your password will be transferred
-                    thru the
+                    through the
                     standard HTTP request in base64 encoding. This tool does not store any passwords or other user
                     information.</p>
                 <p>Without authorization you still can view information about any existing GitHub user, repos and issues
@@ -149,7 +149,7 @@ class HomePage extends Component { // eslint-disable-line react/prefer-stateless
 HomePage.propTypes = {
     user: PropTypes.object,
     showSignInDialog: PropTypes.bool,
-    loadingWindowState: PropTypes.bool,
+    loadingWindowState: PropTypes.object,
     authorizationRequest: PropTypes.object,
     showHelpWindow: PropTypes.bool
 };

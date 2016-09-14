@@ -91,11 +91,12 @@ class IssuesTracker extends Component {
                                 <div style={{textAlign: "left", backgroundColor: "#ff9800", color: "white"}}>
                                     <h4 style={{padding:"15px 0 15px 15px", margin:"0"}}>Issues</h4>
                                 </div>
-                                {issues.length < 10 ? <div></div> :
+                                {pagination.next!=null||pagination.prev!=null ?
                                     <IssuesPagination pagination={pagination}
                                                       handlePagination={this.handlePagination}
-                                                      handlePerPage={this.handlePerPageProp}
-                                    />}
+                                                      handlePerPage={this.handlePerPageProp}/> :
+                                    <div></div>
+                                    }
                                 <Divider />
                                 {list}
                             </Paper>
