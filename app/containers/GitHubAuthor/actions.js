@@ -3,6 +3,7 @@
  */
 
 import { getData, getRepoList } from 'api/restUtilities';
+import { setPagination } from 'containers/IssuesTracker/actions';
 
 
 export function setNewGitHubAuthor(name, id, avatarURL, repos, errorMessage) {
@@ -22,6 +23,13 @@ export function changeGitHubAuthor(author) {
         const signedUser = getState().get('globals').user;
         const login = signedUser.login;
         const password = signedUser.password;
+        const pagination= {
+            next: null,
+            prev: null,
+            first: null,
+            last: null,
+            perPage: 10
+            };
 
         getData(URL, login, password).then(
             response=> {
@@ -35,7 +43,10 @@ export function changeGitHubAuthor(author) {
                     const error = "";
                     getRepoList(author, login, password).then(
                         repos=> {
+
+                            dispatch(setPagination(pagination));
                             dispatch(setNewGitHubAuthor(author, id, avatarURL, repos, error));
+
                         }
                     );
 
