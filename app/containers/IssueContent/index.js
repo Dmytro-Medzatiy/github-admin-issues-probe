@@ -55,7 +55,7 @@ class IssueContent extends Component {
     onNewLabels(newLabels) {
         this.props.showSnackBar(true);
         //push to state and post through the async action
-        this.props.onChangeLabels(newLabels, this.props.currentIssue.issueNumber);
+        this.props.onChangeLabels(newLabels, this.props.currentIssue.issueNumber, this.props.currentIssueIndex);
 
 
     }
@@ -208,7 +208,7 @@ const mapStateToProps = createStructuredSelector({
 function mapDispatchToProps(dispatch) {
     return {
         onChangeComments: (commentsList) => dispatch(changeCommentsList(commentsList)),
-        onChangeLabels: (newLabels, issueNumber) => dispatch(onUpdateLabels(newLabels, issueNumber)),
+        onChangeLabels: (newLabels, issueNumber, issueIndex) => dispatch(onUpdateLabels(newLabels, issueNumber, issueIndex)),
         showLoading: (isOpen, text) => dispatch(onChangeLoadingWindow(isOpen, text)),
         getComments: (owner, repoName, issueNumber) => dispatch(getComments(owner, repoName, issueNumber)),
         onShowLabelsEditor: (flag) => dispatch(changeShowingLabelsEditor(flag)),

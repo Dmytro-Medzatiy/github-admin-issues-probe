@@ -35,7 +35,7 @@ export function changeCurrentIssueLabels(newLabels, issueIndex) {
     }
 }
 
-export function onUpdateLabels (newLabels, issueNumber) {
+export function onUpdateLabels (newLabels, issueNumber, issueIndex) {
     return (dispatch, getState) => {
         const owner = getState().get('githubAuthor').githubAuthor.name;
         const repoIndex = getState().get('githubAuthor').currentRepoIndex;
@@ -52,7 +52,7 @@ export function onUpdateLabels (newLabels, issueNumber) {
         putData(URL, login, password, data).then(
             res=> {
                 if (res==200) {
-                    dispatch(changeCurrentIssueLabels(newLabels, (issueNumber-1)));
+                    dispatch(changeCurrentIssueLabels(newLabels, issueIndex));
                 } 
             }
         )

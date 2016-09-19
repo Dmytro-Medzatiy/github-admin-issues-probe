@@ -78,7 +78,8 @@ class IssuesTracker extends Component {
             <h4 style={{padding:"15px", color: "#4b606b"}}>{message}</h4>);
 
         const issueContent = currentIssue != null ?
-            <IssueContent currentRepo={repoList[currentRepoIndex]}/> : <h4 style={{margin:"2em"}}>Choose Issue</h4>;
+            <IssueContent currentRepo={repoList[currentRepoIndex]}
+                          currentIssueIndex={currentIssueIndex}  /> : <h4 style={{margin:"2em"}}>Choose Issue</h4>;
 
         const currentIssueNumber = currentIssue != null ? currentIssue.issueNumber : null;
 
